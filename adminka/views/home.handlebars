@@ -1,0 +1,174 @@
+<div class="row section">
+    <div class="col s4">
+        <div class="center z-depth-2 padding_top">
+            <p class="message">Количество посетителей в конкретный день:</p>
+            <p class="server_answer message red-text">сегодня {{ yesterday }} человек</p>
+            <div class="container">
+                <input type="date" class="datepicker">
+            </div>
+        </div>
+        <div class="section center margin_top">
+            <a id="generatePrice" class="waves-effect waves-light btn large">Сгенерировать прайс</a>
+            <div id="preload" class="col s12 margin_top">
+            </div>
+        </div>
+        <div class="section center margin_top">
+            <a id="db_back" class="waves-effect waves-light btn large">Бэкап базы</a>
+            <div id="db_back_preload" class="col s12 margin_top">
+            </div>
+        </div>
+    </div>
+    <div class="col s8">
+        <div class="ct-chart ct-perfect-fourth"></div>
+        <div class="container">
+            <p class="range-field">
+                <input id="range" type="range" value="7" min="1" max="90" />
+            </p>
+        </div>
+        <div class="center">
+            <button class="btn lighten-1 waves-effect waves-light fiter">Показать</button>
+        </div>
+    </div>
+</div>
+
+<style>
+    .message {
+        font-weight: 500;
+        font-size: 1.2em;
+    }
+
+    .padding_top {
+        padding-top: 5px;
+    }
+
+    .margin_top {
+        margin-top: 50px !important;
+    }
+</style>
+
+<script>
+    // one day statistic
+    var $input = $('.datepicker').pickadate();
+    var picker = $input.pickadate('picker');
+
+    picker.on({
+        set: function (select) {
+            if (select.select) {
+
+                let date = new Date(select.select).toDateString();
+
+                $.ajax({
+                    url: "/api/statistic",
+                    type: "POST",
+                    data: { date: date },
+                    success: (result) => {
+                        let anw = JSON.parse(result);
+                        $(".server_answer").html(anw.msg)
+
+                    },
+                    error: (err) => {
+                        if (err.status == 401) {
+                            Materialize.toast('Вы не авторизированы.', 1000);
+                            setTimeout(() => {
+                                document.location.href = "/";
+                            }, 800);
+                        } else {
+                            Materialize.toast('Упс, ошибка! Подробности в консоле.', 4000);
+                            console.log(err);
+                        };
+                    }
+                });
+            }
+        }
+    });
+
+
+
+    // range statistic
+    var data = { labels: {{{json labels }}}, series: [{{{json series }}}] };
+    new Chartist.Bar('.ct-chart', data);
+
+    $(".fiter").on("click", (e) => {
+
+        let range = $("#range").val();
+
+        $.ajax({
+            url: "/api/statistics",
+            type: "POST",
+            data: { range: range },
+            success: (result) => {
+                new Chartist.Bar('.ct-chart', JSON.parse(result));
+            },
+            error: (err) => {
+                if (err.status == 401) {
+                    Materialize.toast('Вы не авторизированы.', 1000);
+                    setTimeout(() => {
+                        document.location.href = "/";
+                    }, 800);
+                } else {
+                    Materialize.toast('Упс, ошибка! Подробности в консоле.', 4000);
+                    console.log(err);
+                };
+            }
+        });
+    });
+
+
+    // btn generate price
+    $("#generatePrice").on("click", (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+
+        // show preloader
+        document.getElementById("preload").innerHTML = `<div class="progress"><div class="indeterminate"></div></div>`;
+
+        $.ajax({
+            url: "/api/price_gen",
+            type: "GET",
+            success: (result) => {
+                document.getElementById("preload").innerHTML = `<div><a class="message" href="/tmp/${result}" download>Ссылка на файл прайса</a><p>(ссылка действительна 10 минут)</p></div>`;
+            },
+            error: (err) => {
+                if (err.status == 401) {
+                    Materialize.toast('Вы не авторизированы.', 1000);
+                    setTimeout(() => {
+                        document.location.href = "/";
+                    }, 800);
+                } else {
+                    Materialize.toast('Упс, ошибка! Подробности в консоле.', 4000);
+                    console.log(err);
+                };
+            }
+        });
+    });
+
+
+
+    // btn get DB backup
+    $("#db_back").on("click", (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+
+        // show preloader
+        document.getElementById("db_back_preload").innerHTML = `<div class="progress"><div class="indeterminate"></div></div>`;
+
+        $.ajax({
+            url: "/api/db_back",
+            type: "GET",
+            success: (result) => {
+                document.getElementById("db_back_preload").innerHTML = `<div><a class="message" href="/tmp/${result}" download>Ссылка на файл бэкапа</a><p>(ссылка действительна 10 минут)</p></div>`;
+            },
+            error: (err) => {
+                if (err.status == 401) {
+                    Materialize.toast('Вы не авторизированы.', 1000);
+                    setTimeout(() => {
+                        document.location.href = "/";
+                    }, 800);
+                } else {
+                    Materialize.toast('Упс, ошибка! Подробности в консоле.', 4000);
+                    console.log(err);
+                };
+            }
+        });
+    });
+</script>

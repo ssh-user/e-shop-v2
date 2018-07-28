@@ -1,0 +1,15 @@
+.font_header{
+    font-size: 2em;
+    font-weight: 700;
+    font-family: nautilus;
+}
+
+.alert{
+    font-size: 1.4em;
+    font-weight: 500;
+    color: red;
+}
+
+.margin_top{
+    margin-top: 20px;
+}

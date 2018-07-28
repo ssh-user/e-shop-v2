@@ -1,0 +1,53 @@
+<div [@openPage] class="row section">
+    <form class="col s12">
+        <div class="row">
+
+            <div class="input-field col s12 m6 l6">
+                <i class="material-icons prefix">account_circle</i>
+                <input id="icon_fio" minlength="2" class="validate" type="text" name="fio" [(ngModel)]="user.fio" #fio="ngModel" required>
+                <label for="icon_fio" data-error="Напишите своё ФИО">ФИО</label>
+            </div>
+
+            <div class="input-field col s12 m6 l6">
+                <i class="material-icons prefix">email</i>
+                <input id="icon_email" type="email" class="validate" name="email" [(ngModel)]="user.email" #email="ngModel">
+                <label for="icon_email">Почта (НЕ обязательное поле)</label>
+            </div>
+
+            <div class="input-field col s12 m6 l6">
+                <i class="material-icons prefix">phone</i>
+                <input id="icon_telephone" type="tel" minlength="6" class="validate" name="phone" [(ngModel)]="user.phone" #phone="ngModel"
+                    PhoneValid required>
+                <label for="icon_telephone" data-error="Напишите свой контактный телефон">Номер телефона</label>
+            </div>
+
+            <div class="input-field col s12 m6 l6">
+                <i class="material-icons prefix">phone</i>
+                <input id="icon_telephone_second" type="tel" minlength="6" class="validate" name="secondphone" [(ngModel)]="user.secondphone"
+                    #secondphone="ngModel" PhoneValid>
+                <label for="icon_telephone_second" data-error="Напишите свой дополнительный номер телефона">Номер телефона</label>
+            </div>
+
+            <div class="input-field col s12">
+                <i class="material-icons prefix">contacts</i>
+                <input id="icon_adress" type="text" minlength="4" class="validate" name="adress" [(ngModel)]="user.adress" #adress="ngModel"
+                    required>
+                <label for="icon_adress" data-error="Напишите адрес доставки">Адрес доставки</label>
+            </div>
+
+
+            <div class="input-field col s12">
+                <i class="material-icons prefix">comment</i>
+                <textarea id="icon_note" class="materialize-textarea" name="note" [(ngModel)]="user.note" #note="ngModel"></textarea>
+                <label for="icon_note">Поле для заметок (НЕ обязательное поле)</label>
+            </div>
+
+            <div class="col s12">
+                <button [disabled]="fio.invalid || adress.invalid || phone.invalid" class="btn btn-default right" (click)="send()">Отправить заказ!
+                    <i class="material-icons right">done</i>
+                </button>
+            </div>
+
+        </div>
+    </form>
+</div>

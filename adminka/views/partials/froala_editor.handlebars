@@ -1,0 +1,18 @@
+<textarea name="description" id="description"></textarea>
+
+<script>
+    // FROALA
+    $('#description').froalaEditor({
+        charCounterCount: true,
+        height: 600,
+        quickInsertButtons: false,
+        toolbarButtons: [
+            'fontSize', '|',
+            'bold', 'italic', 'underline', 'strikeThrough', '|',
+            'emoticons', 'color', 'align', '|',
+            'formatOL'
+        ]
+    });
+    $('#description').froalaEditor("html.set", ``);
+
+</script>

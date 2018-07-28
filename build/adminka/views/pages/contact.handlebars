@@ -1,0 +1,50 @@
+<div class="row">
+    <div class="col s12 margin">
+        <a id="btn_save" class="btn waves-effect waves-light red right">Сохранить</a>
+    </div>
+    <div class="col s12">
+        {{> froala_editor }}
+    </div>
+</div>
+
+<style>
+    .margin {
+        margin: 15px;
+    }
+</style>
+
+<script>
+    $('#description').froalaEditor("html.set", `{{{ contact.text }}}`);
+
+    $("#btn_save").on("click", () => {
+
+        let data = {
+            text: $('#description').froalaEditor('html.get', true)
+        };
+
+        $.ajax({
+            url: "/api/contact",
+            type: "POST",
+            data: data,
+            success: () => {
+                Materialize.toast('Контакты - обновлёны!', 800);
+                setTimeout(() => {
+                    document.location.reload();
+                }, 800);
+            },
+            error: (err) => {
+                if (err.status == 401) {
+                    Materialize.toast('Вы не авторизированы.', 1000);
+                    setTimeout(() => {
+                        document.location.href = "/";
+                    }, 800);
+                } else {
+                    Materialize.toast('Упс, ошибка! Подробности в консоле.', 4000);
+                    console.log(err);
+                };
+            }
+
+        });
+    });
+
+</script>

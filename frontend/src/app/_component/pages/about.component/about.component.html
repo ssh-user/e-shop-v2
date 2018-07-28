@@ -1,0 +1,9 @@
+<div *ngIf="about; then text else preloader"></div>
+
+<ng-template #text>
+    <div [@openPage] [froalaView]="about"></div>
+</ng-template>
+
+<ng-template #preloader>
+    <preloader class="center"></preloader>
+</ng-template>

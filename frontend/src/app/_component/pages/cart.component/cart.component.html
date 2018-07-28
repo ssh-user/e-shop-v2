@@ -1,0 +1,47 @@
+<div [@openPage] *ngIf="productList.length != 0" class="section">
+    <table class="bordered striped highlight centered responsive-table">
+        <thead>
+            <tr class="hide-on-med-and-down">
+                <th>Фото</th>
+                <th>Товар</th>
+                <th>Количество</th>
+                <th>Цена</th>
+                <th>Сумма</th>
+                <th></th>
+            </tr>
+        </thead>
+
+        <tbody>
+            <tr *ngFor="let item of productList; let index = index;">
+                <td class="bold"><img src="/assets/images/{{ item?.image[0]?.length > 0 ? item.image[0] : 'default.png' }}" class="circle responsive-img table-img"></td>
+                <td class="bold"><a [routerLink]="['/item', item._id]" class="blue-text">{{ item.name }}</a></td>
+                <td class="bold">{{ item.count }} шт.</td>
+                <td class="bold">{{ item.price | discount:user.discount | number : '1.2-2' }} грн.</td>
+                <td class="bold">{{ ((item.price | discount:user.discount ) * item.count) | number : '1.2-2'}} грн.</td>
+                <td>
+                    <a class="btn-floating btn-large waves-effect waves-light red" (click)="delete(index)">
+                        <i class="material-icons">delete</i>
+                    </a>
+                </td>
+            </tr>
+            <tr *ngIf="user.username != 'Гость'">
+                <td colspan="4" class="bold">В сумме учтена скидка:</td>
+                <td colspan="2" class="bold alert">{{ discountSum | number : '1.2-2' }} грн.</td>
+            </tr>
+            <tr>
+                <td colspan="4" class="bold">Итого:</td>
+                <td colspan="2" class="bold alert">{{ sum | number : '1.2-2' }} грн.</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <a class="btn waves-effect waves-light right next" routerLink="/user">Продолжить оформление
+        <i class="material-icons right">send</i>
+    </a>
+</div>
+
+<div [@openPage] *ngIf="productList.length == 0">
+    <div class="center"><img src="/assets/joke.jpg" alt="" class="circle responsive-img"></div>
+    <h2 class="center">Ваша корзина - пуста.</h2>
+    <h2 class="center"><a [routerLink]="['']">Положите</a> в неё что-нибудь, пожалуйста! :)</h2>
+</div>

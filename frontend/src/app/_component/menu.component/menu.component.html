@@ -1,0 +1,21 @@
+<div>
+    <ul *ngIf="daughtersMenu" class="collapsible z-depth-4" data-collapsible="accordion">
+        <li>
+            <div class="color_header_div padding_header center">
+                <p class="deep-purple-text text-darken-3 font_header">Каталог товаров</p>
+            </div>
+        </li>
+        <li *ngFor="let category of daughtersMenu">
+            <div class="collapsible-header padding color_div valign-wrapper">
+                <a [routerLink]="['portal', category._id]" class="color_name full_menu_a">{{ category.name }} <i class="material-icons right color_name bold no_margin">add</i></a>
+            </div>
+            <div class="collapsible-body element_div_padding element_div_color">
+                <ul>
+                    <li *ngFor="let sub of category.categories" class="elemet_border element_color">
+                        <a id="{{ sub._id }}" [routerLink]="['catalog', sub._id]" class="element_font_color full">{{ sub.name }}</a>
+                    </li>
+                </ul>
+            </div>
+        </li>
+    </ul>
+</div>

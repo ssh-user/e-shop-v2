@@ -1,0 +1,14 @@
+@font-face {
+	font-family: 'nautilus';
+	src: url('/assets/css/nautilus/fonts/8343.eot');
+    src: local('☺'), 
+        url('/assets/css/nautilus/fonts/8343.woff') format('woff'), 
+        url('/assets/css/nautilus/fonts/8343.ttf') format('truetype'), 
+        url('/assets/css/nautilus/fonts/8343.svg') format('svg');
+	font-weight: normal;
+	font-style: normal;
+}
+
+menu{
+    padding-left: 0;
+}

@@ -1,0 +1,124 @@
+<div *ngIf="user; then user_yes else user_no"></div>
+
+
+<ng-template #user_no>
+    <preloader></preloader>
+</ng-template>
+
+<ng-template #user_yes>
+    <div [@openPage]>
+        <div class="row section">
+            <div class="col s12 m3 l3">
+                <p class="left center font_header">Ваш профиль:</p>
+            </div>
+            <div class="col s12 m3 l3">
+                <button class="btn red left waves-effect waves-light" (click)="logout()">Выйти</button>
+            </div>
+            <div class="col s12 m3 l3">
+                <a routerLink="/history" class="btn waves-effect waves-light blue">История заказов</a>
+            </div>
+            <div class="col s12 m3 l3">
+                <button class="btn green accent-4 right waves-effect waves-light" (click)="save()">Сохранить изменения</button>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col s12 m6 l4">
+                <div class="section center z-depth-2">
+                    <img #userpic src="/assets/userpics/{{ user.image }}" class="responsive-img">
+                </div>
+
+                <div [@showHide] *ngIf="alertFotoSize">
+                    <p class="alert center">Размер файла очень большой. Пожалуйста, загружайте НЕ больше 500 килобайт или 0.5 Мегабайта. Спасибо.</p>
+                </div>
+
+                <div class="section">
+                    <div class="file-field input-field">
+                        <div class="btn">
+                            <span>Фото</span>
+                            <input id="userpicInput" #file (change)="onChangeImage(file.files, userpic)" type="file" name="image" accept="image/*">
+                        </div>
+                        <div class="file-path-wrapper">
+                            <input class="file-path validate" type="text">
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col s12 m6 l4">
+                <div class="input-field">
+                    <i class="material-icons prefix">account_circle</i>
+                    <input autocomplete=off id="fio" minlength="2" type="text" name="fio" value="{{ user.fio }}">
+                    <label for="username">ФИО</label>
+                </div>
+                <div class="input-field">
+                    <i class="material-icons prefix">phone</i>
+                    <input autocomplete=off id="icon_telephone" type="tel" minlength="6" class="validate" name="phone" value="{{ user.phone }}"
+                        PhoneValid>
+                    <label for="icon_telephone">Номер телефона</label>
+                </div>
+                <div class="input-field">
+                    <i class="material-icons prefix">phone</i>
+                    <input autocomplete=off id="icon_telephone_second" type="tel" minlength="6" class="validate" name="phone" value="{{ user.secondphone }}"
+                        PhoneValid>
+                    <label for="icon_telephone_second">Дополнительный номер телефона</label>
+                </div>
+                <div class="input-field">
+                    <i class="material-icons prefix">email</i>
+                    <input autocomplete=off id="icon_email" type="email" class="validate" name="email" value="{{ user.email }}" disabled>
+                    <label for="icon_email">Почта</label>
+                </div>
+                <div class="input-field">
+                    <i class="material-icons prefix">contacts</i>
+                    <input autocomplete=off id="icon_adress" type="text" minlength="4" class="validate" name="adress" value="{{ user.adress }}">
+                    <label for="icon_adress">Адрес доставки</label>
+                </div>
+            </div>
+
+            <div class="col s12 m6 l4">
+                <div [@showHide] *ngIf="alertNeedPassword">
+                    <p class="alert center">
+                        Для сохранения настроек, необходимо ввести пароль.
+                    </p>
+                </div>
+                <div [@showHide] *ngIf="alertWrongPassword">
+                    <p class="alert center">
+                        Вы ввели неправильный пароль. Проверьте правильность ввода, раскладку клавиатуры, Caps Lock.
+                    </p>
+                </div>
+                <div class="input-field">
+                    <i class="material-icons prefix">vpn_key</i>
+                    <input autocomplete=off autocomplete="new-password" id="passwordOld" type="password" minlength="3" class="validate" name="password"
+                        required>
+                    <label for="passwordOld">Пароль</label>
+                </div>
+                <div>
+                    <p class="center margin_top">Сменить пароль:</p>
+                </div>
+                <div [@showHide] *ngIf="alertDifferentPasswords">
+                    <p class="alert center">Пароли не совпадают</p>
+                </div>
+                <div class="input-field">
+                    <i class="material-icons prefix">chat_bubble_outline</i>
+                    <input autocomplete=off autocomplete="newPassword" id="newPassword" type="password" minlength="3" class="validate" name="password"
+                        required>
+                    <label for="newPassword">Новый пароль</label>
+                </div>
+                <div class="input-field">
+                    <i class="material-icons prefix">chat_bubble_outline</i>
+                    <input autocomplete=off autocomplete="newPasswordCopy" id="newPasswordCopy" type="password" minlength="3" class="validate"
+                        name="password" required>
+                    <label for="newPasswordCopy">Еще раз новый пароль</label>
+                </div>
+            </div>
+
+        </div>
+
+        <div class="col s12">
+            <blockquote class="red-text">
+                <p class="">Согласно правилам магазина, передавать аккаунт 3-м лицам - запрещено.</p>
+                <p class="">Скидка будет предоставляться только по адресу доставки, указанному на момент присвоения аккаунту скидки.</p>
+            </blockquote>
+        </div>
+    </div>
+</ng-template>

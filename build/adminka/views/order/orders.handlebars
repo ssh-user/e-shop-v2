@@ -1,0 +1,366 @@
+<audio id="sms" src="/shorty.mp3"></audio>
+
+<div class="row">
+    <div class="col s12">
+        <ul style="overflow-x:hidden" class="tabs tabs-fixed-width">
+            <li class="tab col s3"><a href="#orders">Заказы</a></li>
+            <li class="tab col s3"><a href="#process">Обработаны</a></li>
+            <li class="tab col s3"><a href="#archive">Архив</a></li>
+        </ul>
+    </div>
+    <div id="orders" class="col s12">
+        <div class="col s12 margin">
+            <a id="toggle_sig" class="btn-floating btn-large waves-effect waves-light left green"><i class="material-icons">volume_up</i></a>
+        </div>
+        <table class="striped centered ">
+            <thead>
+                <tr>
+                    <th>Время</th>
+                    <th class="hide-on-med-and-down">Заказ</th>
+                    <th>Имя</th>
+                    <th>Телефон</th>
+                    <th>Адрес</th>
+                    <th class="hide-on-med-and-down">Статус</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody class="flag">
+                {{#each orders.waitings}}
+                <tr id="{{ this._id }}">
+                    <td>{{time this.time }}</td>
+                    <td class="bold hide-on-med-and-down">
+                        № <span class="red-text">{{ this.orderNumber }}</span>
+                    </td>
+                    <td class="bold">
+                        <p>{{ this.user.username }}</p>
+                        <p>{{ this.user.fio }}</p>
+                    </td>
+                    <td>
+                        <p>{{ this.user.phone }}</p>
+                        <p>{{ this.user.secondphone }}</p>
+                    </td>
+                    <td>
+                        <p>{{ this.user.adress }}</p>
+                    </td>
+                    <td class="hide-on-med-and-down">
+                        <p class="blue-text bold">ожидает..</p>
+                    </td>
+                    <td>
+                        <a href="/order/{{ this._id }}" class="waves-effect waves-light btn blue hide-on-med-and-down">Обработать</a>
+                        <a href="/order/{{ this._id }}" class="btn-floating btn-large waves-effect waves-light blue hide-on-large-only"><i class="material-icons">edit</i></a>
+                    </td>
+                </tr>
+                {{else}}
+                <tr>
+                    <td class="bold red-text" colspan="6">Пока нет заказов. Ждем.</td>
+                </tr>
+                {{/each}}
+            </tbody>
+        </table>
+    </div>
+    <div id="process" class="col s12">
+        <div class="col s12 margin">
+            <a target="_blank" href="/orders/print/" class="waves-effect waves-light btn blue right"><i class="material-icons left">print</i>распечатать</a>
+        </div>
+        <table class="striped centered">
+            <thead>
+                <tr>
+                    <th>Время</th>
+                    <th class="hide-on-med-and-down">Заказ</th>
+                    <th>Имя</th>
+                    <th>Телефон</th>
+                    <th>Адрес</th>
+                    <th class="hide-on-med-and-down">Статус</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                {{#each orders.process}}
+                <tr>
+                    <td>{{time this.time }}</td>
+                    <td class="bold hide-on-med-and-down">
+                        № <span class="red-text">{{ this.orderNumber }}</span>
+                    </td>
+                    <td class="bold">
+                        <p>{{ this.user.username }}</p>
+                        <p>{{ this.user.fio }}</p>
+                    </td>
+                    <td>
+                        <p>{{ this.user.phone }}</p>
+                        <p>{{ this.user.secondphone }}</p>
+                    </td>
+                    <td>
+                        <p>{{ this.user.adress }}</p>
+                    </td>
+                    <td class="hide-on-med-and-down">
+                        <p class="blue-text bold">обработан</p>
+                    </td>
+                    <td>
+                        <a href="/order/{{ this._id }}" class="waves-effect waves-light btn green hide-on-med-and-down">изменить</a>                        
+                        <a href="/order/{{ this._id }}" class="btn-floating btn-large waves-effect waves-light green hide-on-large-only"><i class="material-icons">edit</i></a>
+                    </td>
+                </tr>
+                {{else}}
+                <tr>
+                    <td class="bold red-text" colspan="6">Обработаных заказов - нет. Всех обслужили.</td>
+                </tr>
+                {{/each}}
+            </tbody>
+        </table>
+    </div>
+    <div id="archive" class="col s12 center">
+        <div class="row">
+            <div class="col s12">
+                <div class="row valign-wrapper">
+                    <div class="col s9">
+                        <p class="bold blue-text center font">Поиск заказов:</p>
+                    </div>
+                    <div class="col s3">
+                        <a class="waves-effect waves-light btn blue filter"><i class="material-icons left">search</i>искать</a>
+                    </div>
+                </div>
+            </div>
+            <div class="col s12">
+                <div class="row">
+                    <div class="col s12 m6 l4">
+                        <div class="row">
+                            <p class="font green-text">По дате:</p>
+                            <div class="col s6">
+                                <select id="year">
+                                    <option value="" selected> Год </option>
+                                    {{#each yearRange}}                    
+                                        <option value={{this}}>{{ this }}</option>
+                                    {{/each}}
+                                </select>
+                            </div>
+                            <div class="col s6">
+                                <select id="month">
+                                    <option value="" selected> Месяц</option>
+                                    {{#each monthRange }}                    
+                                        <option value={{ @index }}>{{ this }}</option>
+                                    {{/each}}
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col s12 m6 l3">
+                        <p class="font green-text">По пользователю:</p>
+                        <select id="user" class="icons">
+                            <option value="" selected>Всех</option>
+                            {{#each users}}
+                                <option value="{{ this._id }}" 
+                                    data-icon="/userpics/{{ this.image }}" 
+                                    class="left circle">{{ this.username }}</option>
+                            {{else}}
+                                <option value="" disabled selected>Пользователей - нет.</option>
+                            {{/each}}
+                        </select>
+                    </div>
+                    <div class="col s12 m6 l2">
+                        <p class="font green-text">По номеру:</p>
+                        <div class="container"><input placeholder="номер" class="number center" type="number"></div>
+                    </div>
+                    <div class="col s12 m6 l2">
+                        <p class="font green-text">По диапазону номеров:</p>
+                        <div class="col s6 container"><input placeholder="от" class="number_from center" type="number"></div>
+                        <div class="col s6 container"><input placeholder="до" class="number_to center" type="number"></div>
+                    </div>
+                </div>
+            </div>
+            <div class="col s12" id="view"></div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .font {
+        font-size: 1.4em;
+    }
+
+    .bold {
+        font-weight: bold;
+    }
+
+    .margin {
+        margin: 20px 0;
+    }
+</style>
+
+<script>
+    // init archive filter by DATE
+    var $input = $('.datepicker').pickadate();
+    var picker = $input.pickadate('picker');
+
+    // init "select"
+    $('select').material_select();
+
+    // archive search
+    $(".filter").on("click", () => {
+        let year = $("#year").val();
+        let month = $("#month").val();
+        let number = $(".number").val();
+        let from = $(".number_from").val();
+        let to = $(".number_to").val();
+        let user = document.getElementById("user").value;
+
+        // create filter request
+        let request = {};
+        if (year) request.year = year;
+        if (month) request.month = month;
+        if (number) request.orderNumber = number;
+        if (user) request.user = user;
+        if (from && to) request.range = { from: from, to: to };
+
+        // stop if no data to search
+        if (Object.keys(request).length === 0) return;
+
+        $.ajax({
+            url: "/api/order/archive/",
+            type: "POST",
+            data: request,
+            success: (array) => {
+                array = JSON.parse(array);
+                $("#view").html("");
+                if (array.length == 0) $("#view").html("<p class='bold font red-text center'>Нет данных по этому запросу.</p>");
+                else {
+                    let html = template(array);
+                    $("#view").html(html);
+                    $('html, body').animate({
+                        scrollTop: $("#view").offset().top
+                    }, 1000);
+                };
+            },
+            error: () => {
+                Materialize.toast('Упс, ошибка сети, не удалось получить архив', 4000);
+            }
+        });
+    });
+
+    // prev settings of sound
+    let signal = localStorage.getItem("signal");
+    (signal != null && signal != "false") ? enableSound() : disableSound();
+
+    // btn toggle signal
+    $("#toggle_sig").on("click", (e) => {
+        if (signal) {
+            disableSound();
+        } else {
+            enableSound();
+        };
+    });
+
+    // interval to check new orders from server
+    setInterval(() => {
+        $.ajax({
+            url: "/api/order/check/",
+            type: "GET",
+            success: (array) => {
+                let arr = JSON.parse(array);
+                if (arr.length != 0) {
+
+                    for (let elem of arr) {
+                        let element = document.getElementById(elem._id);
+                        if (!element) {
+                            let correct = new Date(elem.time);
+                            correct = `${correct.getFullYear()}/${correct.getMonth() + 1}/${correct.getDate()} ${correct.getHours()}:${correct.getMinutes()}`;
+
+                            $(".flag").append(`
+                                <tr id="${ elem._id}">
+                                    <td>${ correct}</td>
+                                    <td class="bold">№ <span class="red-text">${ elem.orderNumber}</span></td>
+                                    <td class="bold">${ elem.user.username}</td>
+                                    <td>
+                                        <p>${elem.user.phone}</p>
+                                        <p>${elem.user.secondphone || ""}</p>
+                                    </td>
+                                    <td>${elem.user.adress}</td>
+                                    <td>
+                                        <p class="blue-text bold">ожидает..</p>
+                                    </td>
+                                    <td>
+                                        <a href="/order/${ elem._id}" class="waves-effect waves-light btn blue">Обработать</a>
+                                    </td>
+                                </tr>
+                            `);
+                        };
+                    };
+
+                    if (signal) signal.play();
+                };
+            },
+            error: () => {
+                Materialize.toast('Упс, ошибка сети, не удалось получить новые заказы', 4000);
+            }
+        });
+    }, 1000 * 60); // every minute check new orders
+
+
+
+    // helper functions
+    function template(array) {
+        let html = `
+            <table class="striped centered">
+                <thead>
+                    <tr>
+                        <th>Время</th>
+                        <th class="hide-on-med-and-down">Заказ</th>
+                        <th>Имя</th>
+                        <th>Телефон</th>
+                        <th>Адрес</th>
+                        <th class="hide-on-med-and-down">Статус</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>`;
+
+        for (let elem of array) {
+            let correct = new Date(elem.time);
+            correct = `${correct.getFullYear()}/${correct.getMonth() + 1}/${correct.getDate()} ${correct.getHours()}:${correct.getMinutes()}`;
+            let status = "";
+            if (elem.status == "wait") status = "ожидает..";
+            else if (elem.status == "process") status = "обработан";
+            else if (elem.status == "archive") status = "в архиве";
+
+            html += `
+                    <tr>
+                        <td>${correct}</td>
+                        <td class="bold hide-on-med-and-down">№ <span class="red-text">${elem.orderNumber}</span></td>
+                        <td class="bold">
+                            <p>${elem.user.username}</p>
+                            <p>${elem.user.fio}</p>
+                        </td>
+                        <td>
+                            <p>${elem.user.phone}</p>
+                            <p>${elem.user.secondphone || ""}</p>
+                        </td>
+                        <td>${elem.user.adress || "Не указали"}</td>
+                        <td class="hide-on-med-and-down">
+                            <p class="blue-text bold">${status}</p>
+                        </td>
+                        <td>
+                            <a href="/order/${elem._id}" class="waves-effect waves-light btn green hide-on-med-and-down">изменить</a>
+                            <a href="/order/${elem._id}" class="btn-floating btn-large waves-effect waves-light green hide-on-large-only"><i class="material-icons">edit</i></a>        
+                        </td>
+                    </tr>
+        `};
+
+        html += `</tbody></table>`;
+
+        return html;
+    };
+
+    function disableSound() {
+        signal = null;
+        localStorage.setItem("signal", false);
+        $("#toggle_sig").removeClass("green").addClass("red");
+        $("#toggle_sig").find("i")[0].innerHTML = "volume_off";
+    };
+
+    function enableSound() {
+        localStorage.setItem("signal", true);
+        $("#toggle_sig").removeClass("red").addClass("green");
+        $("#toggle_sig").find("i")[0].innerHTML = "volume_up";
+        signal = document.getElementById('sms');
+    };
+
+</script>

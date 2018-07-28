@@ -1,0 +1,157 @@
+<div class="row">
+    <div class="col s12">
+        <ul class="tabs tabs-fixed-width">
+            <li class="tab col s3"><a class="active" href="#users">Пользователи</a></li>
+            <li class="tab col s3"><a href="#admins">Админы</a></li>
+        </ul>
+    </div>
+    <div id="users" class="col s12">
+        <div>
+            <ul class="collection">
+                {{#each users}}
+                {{!-- <li class="collection-item avatar">
+                    <img class="circle" src="/userpics/{{img image }}" alt="foto">
+                    <p class="title">Логин: <span class="alert margin_login">{{ username }}</span></p>
+                    <p class="title">ФИО: <span class="alert margin_name">{{ fio }}</span></p>
+                    <p>Тел: <span class="alert margin_phone">{{ phone }}</span></p>
+                    <p>Скидка: <span class="alert margin_discount">{{ discount }}%</span></p>
+                    <p>Дата регистрации: {{time date }}</p>
+                    <div class="secondary-content">
+                        <a href="/user/{{_id}}" class="edit btn-floating btn-small waves-effect waves-light green margin_btn"><i class="material-icons">edit</i></a>
+                        <a data-id={{_id}} class="delete_user btn-floating btn-small waves-effect waves-light red margin_btn"><i class="material-icons">delete</i></a>
+                    </div>
+                </li> --}}
+                <li class="row collection-item valign-wrapper">
+                    <div class="col s2 center">
+                        <img class="circle size" src="/userpics/{{img image }}" alt="foto">
+                    </div>
+                    <div class="col s4">
+                        <p>Логин: <span class="indigo-text text-accent-4 margin_login">{{ username }}</span></p>
+                        <p>ФИО: <span class="indigo-text text-accent-4 margin_name">{{ fio }}</span></p>
+                        <p>Тел: <span class="indigo-text text-accent-4 margin_phone">{{ phone }}</span></p>
+                    </div>
+                    <div class="col s4">
+                        <p>Адрес: <span class="indigo-text text-accent-4 ">{{ adress }}</span></p>                        
+                        <p>Дата регистрации: <span class="indigo-text text-accent-4 ">{{time date }}</span></p>
+                        <p>Скидка: <span class="alert margin_discount">{{ discount }}%</span></p>
+                    </div>
+                    <div class="col s2 center">
+                        <a href="/user/{{_id}}" class="edit btn-floating btn-small waves-effect waves-light green margin_btn"><i class="material-icons">edit</i></a>
+                        <a data-id={{_id}} class="delete_user btn-floating btn-small waves-effect waves-light red margin_btn"><i class="material-icons">delete</i></a>
+                    </div>
+                </li>
+                {{else}}
+                <li class="collection-item">Список пуст.</li>
+                {{/each}}
+            </ul>
+        </div>
+    </div>
+    <div id="admins" class="col s12">
+        <div>
+            <div class="col s12 margin">
+                <a href="/admin/{{_id}}" class="btn right blue waves-effect waves-light">Создать</a>
+            </div>
+            <ul class="collection">
+                {{#each admins}}
+                <li class="collection-item avatar valign-wrapper">
+                    <img class="circle" src="/userpics/userpic.jpg" alt="foto">
+                    <span class="title">Имя: <span class="alert margin_discount">{{ username }}</span></span>
+                    <div class="secondary-content">
+                        <a data-id={{_id}} class="delete_admin btn-floating btn-small waves-effect waves-light red margin_btn"><i class="material-icons">delete</i></a>
+                    </div>
+                </li>
+                {{else}}
+                <li class="collection-item">Список пуст.</li>
+                {{/each}}
+            </ul>
+        </div>
+    </div>
+</div>
+
+<style>
+    .size{
+        max-height: 100px;
+    }
+
+    .alert {
+        font-size: 1.2em;
+        font-weight: 600;
+    }
+
+    .margin {
+        margin: 20px 0;
+    }
+
+    .margin_discount {
+        margin-left: 20px;
+        color: red;
+    }
+
+    .margin_name {
+        margin-left: 32px;
+    }
+
+    .margin_login{
+        margin-left: 20px;
+    }
+
+    .margin_phone {
+        margin-left: 42px;
+    }
+
+    .margin_btn {
+        margin-top: 7px;
+        margin-left: 15px;
+    }
+</style>
+
+<script>
+    $(".delete_user").on("click", (e) => {
+        let answ = confirm("Точно удалить?");
+        if (!answ) return; // stop function if false
+
+        $.ajax({
+            url: "/api/user/" + e.currentTarget.dataset.id,
+            type: "DELETE",
+            success: () => {
+                document.location.reload();
+            },
+            error: (err) => {
+                if (err.status == 401) {
+                    Materialize.toast('Вы не авторизированы.', 1000);
+                    setTimeout(() => {
+                        document.location.href = "/";
+                    }, 800);
+                } else {
+                    Materialize.toast('Упс, ошибка! Подробности в консоле.', 4000);
+                    console.log(err);
+                };
+            }
+        });
+    });
+
+    $(".delete_admin").on("click", (e) => {
+        let answ = confirm("Точно удалить?");
+        if (!answ) return; // stop function if false
+
+        $.ajax({
+            url: "/api/admin/" + e.currentTarget.dataset.id,
+            type: "DELETE",
+            success: () => {
+                document.location.reload();
+            },
+            error: (err) => {
+                if (err.status == 401) {
+                    Materialize.toast('Вы не авторизированы.', 1000);
+                    setTimeout(() => {
+                        document.location.href = "/";
+                    }, 800);
+                } else {
+                    Materialize.toast('Упс, ошибка! Подробности в консоле.', 4000);
+                    console.log(err);
+                };
+            }
+        });
+    });
+
+</script>

@@ -1,0 +1,182 @@
+<div class="section">
+    <form id="edit_banner_form" data-id="{{ banner._id }}" data-image="{{ banner.image }}">
+        <div class="row">
+
+            <div class="col s12 m12 l12">
+                <button id="save" class="btn blue lighten-1 waves-effect waves-light right" type="submit">Обновить</button>
+            </div>
+
+            <div class="col s12 m12 l12">
+                <div class="row">
+                    {{!-- FOTO --}}
+                    <div class="col s6">
+                        <div id="btn_delete" class="center section">
+                            <button id="delete" class="btn red lighten-1 waves-effect waves-light">Удалить изображение</button>
+                        </div>
+                        <div id="control" class="file-field input-field section">
+                            <div class="btn">
+                                <span>Фото</span>
+                                <input type="file" name="image" id="image" accept="image/*">
+                            </div>
+                            <div class="file-path-wrapper">
+                                <input id="image_path" class="file-path validate" type="text">
+                            </div>
+                        </div>
+
+                        <div class="center">
+                            <img id="preview" class="responsive-img z-depth-1" src="/banners/{{ banner.image }}">
+                        </div>
+
+                        <div>
+                            <blockquote>
+                                <p><span class="red-text">Помни!</span> Высота должна быть <span class="red-text">400</span>                                    пикселей.</p>
+                                <p>Ширина -- на своё усмотрение, но лучше <span class="red-text">800+</span>.</p>
+                            </blockquote>
+                        </div>
+                    </div>
+
+                    {{!-- TEXT --}}
+                    <div class="col s6">
+                        <div class="input-field section">
+                            <input id="title" name="title" type="text" value="{{ banner.title }}">
+                            <label for="title">Заголовок на баннере</label>
+                        </div>
+                        <div class="input-field section">
+                            <input id="body" name="body" type="text" value="{{ banner.body }}">
+                            <label for="body">Тект на баннере</label>
+                        </div>
+                        <div class="input-field section">
+                            <input id="count" name="count" type="number" min="0" value="{{ banner.count }}">
+                            <label for="count">Порядковый номер</label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+
+
+
+<style>
+    #count {
+        max-width: 100px;
+    }
+
+    #control {
+        display: none;
+    }
+</style>
+
+
+
+<script>
+    // temp variable
+    let image = document.getElementById('edit_banner_form').dataset.image;
+    let id = document.getElementById('edit_banner_form').dataset.id;
+
+    // btn SAVE
+    $("#edit_banner_form").submit((e) => {
+        e.preventDefault();
+        e.stopPropagation();
+
+        let data = {
+            "image": image,
+            "title": $("#title").val(),
+            "body": $("#body").val(),
+            "count": $("#count").val()
+        };
+
+        $.ajax({
+            url: "/api/banner/" + id,
+            type: "PUT",
+            data: data,
+            success: () => {
+                Materialize.toast('Баннер успешно обновлен!', 800);
+                setTimeout(() => {
+                    document.location.href = '/banners';
+                }, 800);
+            },
+            error: (err) => {
+                if (err.status == 401) {
+                    Materialize.toast('Вы не авторизированы.', 1000);
+                    setTimeout(() => {
+                        document.location.href = "/";
+                    }, 800);
+                } else {
+                    Materialize.toast('Упс, ошибка! Подробности в консоле.', 4000);
+                    console.log(err);
+                };
+            }
+        });
+    });
+
+    // IMG change
+    $('#image').on('change', () => {
+        let image_file = $("#image")[0].files[0];
+
+        let data = new FormData();
+        data.append("name", image_file.name);
+        data.append("file", image_file);
+
+        $.ajax({
+            url: "/api/banner_image",
+            type: "POST",
+            data: data,
+            processData: false,
+            contentType: false,
+            success: (name) => {
+                // save image_name to variable
+                image = name;
+
+                // change preview to new image
+                $("#preview").attr('src', "/banners/" + name);
+
+                $("#control").hide(300);
+                setTimeout(() => {
+                    $("#btn_delete").show(300);
+                }, 500)
+            },
+            error: (err) => {
+                Materialize.toast('Упс, ошибка! Подробности в консоле.', 4000);
+                console.log(err);
+            }
+
+        });
+    });
+
+    // btn DELETE image
+    $("#delete").on("click", (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+
+        $.ajax({
+            url: "/api/banner_image",
+            type: "DELETE",
+            data: { name: image },
+            success: () => {
+                image = "default.jpg";
+
+                // return default image
+                $("#preview").attr('src', "/banners/default.jpg");
+
+                // hide btn
+                $("#btn_delete").hide(300);
+
+                // set to default control menu
+                $("#image").val(null);
+                $("#image_path").val(null);
+
+                // return default menu
+                setTimeout(() => {
+                    $("#control").show(300);
+                }, 500)
+            },
+            error: (err) => {
+                Materialize.toast('Упс, ошибка! Подробности в консоле.', 4000);
+                console.log(err);
+            }
+        });
+    });
+
+</script>

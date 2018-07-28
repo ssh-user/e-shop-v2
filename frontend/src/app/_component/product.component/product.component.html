@@ -1,0 +1,37 @@
+<div [@openPage] class="card medium">
+    <a [routerLink]="['/item', item._id]">
+        <div class="card-image">
+            <img class="responsive-img" src="/assets/images/{{ item?.image[0]?.length > 0 ? item.image[0] : 'default.png' }}">
+        </div>
+    </a>
+
+    <div class="card-content">
+        <a [routerLink]="['/item', item._id]">
+            <p class="card_portal blue-text center-align truncate name" title='{{ item.name }}'>{{ item.name }}</p>
+        </a>
+
+        <div *ngIf="item.isStock;then price else no_price"></div>
+
+    </div>
+
+    <div class="card-action">
+        <div class="center">
+            <a class="waves-effect waves-light btn" [routerLink]="['/item', item._id]">Подробнее</a>
+        </div>
+    </div>
+
+</div>
+
+
+
+<ng-template #price>
+    <div class="center price">
+        <p>Цена: <span class="deep-purple-text darken-3-text size">{{ item.price | discount:user.discount | number : '1.2-2' }}</span>            грн.</p>
+    </div>
+</ng-template>
+
+<ng-template #no_price>
+    <p class="center price red-text">
+        Скоро ожидается поставка.
+    </p>
+</ng-template>

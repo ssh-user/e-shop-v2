@@ -1,0 +1,97 @@
+<div class="col s12 margin">
+    <a href="/portal_new"><button class="btn blue waves-effect waves-light right btn_new_product">создать</button></a>
+</div>
+
+
+<div>
+    <ul class="collection">
+        {{#each portals}}
+        <li class="collection-item">
+            <ul class="collapsible">
+                <li>
+                    <div class="collapsible-header grey lighten-2">
+                        <span class="category_header">{{this.name}}</span>
+                        <a class="right btn_delete" data-id="{{_id}}" href="#">
+                            <i class="material-icons red-text">delete</i>
+                        </a>
+                        <a class="right btn_edit" data-id="{{_id}}" href="#">
+                            <i class="material-icons green-text">edit</i>
+                        </a>
+                    </div>
+                    <div class="collapsible-body">
+                        {{#each categories}}
+                        <p class="category">{{name}}</p>
+                        {{else}}
+                        <p class="category">Нет дочерних категорий.</p>
+                        {{/each}}
+                    </div>
+                </li>
+            </ul>
+        </li>
+        {{else}}
+        <li>
+            <h3>Список пуст.</h3>
+        </li>
+        {{/each}}
+    </ul>
+</div>
+
+
+<style>
+    .margin {
+        margin: 15px 0;
+    }
+
+    .collapsible-body {
+        padding: 0 15px;
+    }
+
+    .category_header {
+        font-size: 1.4em;
+        font-style: italic;
+    }
+
+    .category {
+        font-weight: 500;
+        font-size: 1.3em;
+    }
+</style>
+
+<script>
+    $(".btn_delete").on("click", (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        let id = e.currentTarget.dataset.id;
+
+        let answ = confirm("Точно удалить?");
+        if (!answ) return; // stop function if false
+
+        $.ajax({
+            url: "/api/portal/" + id,
+            type: 'DELETE',
+            success: function (msg) {
+                document.location.reload();
+            },
+            error: function (err) {
+                if (err.status == 401) {
+                    Materialize.toast('Вы не авторизированы.', 1000);
+                    setTimeout(() => {
+                        document.location.href = "/";
+                    }, 800);
+                } else {
+                    Materialize.toast('Упс, ошибка! Подробности в консоле.', 4000);
+                    console.log(err);
+                };
+            }
+        });
+    });
+
+
+    $(".btn_edit").on("click", (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        let id = e.currentTarget.dataset.id;
+        document.location.href = "/portal/" + id;
+    });
+
+</script>

@@ -1,0 +1,105 @@
+<form id="new_portal_form" class="margin">
+    <div class="row">
+        <div class="col s6">
+            <div class="input-field section">
+                <input placeholder="Название раздела!" id="name" name="name" type="text" class="validate" required>
+                <label for="name">Название раздела</label>
+            </div>
+        </div>
+        <div class="col s3">
+            <div class="input-field section">
+                <input value="0" id="count" name="count" type="number" min="0" class="validate">
+                <label for="count">Порядок отображения</label>
+            </div>
+        </div>
+        <div class="col s3">
+            <button id="save" class="btn right red lighten-1 waves-effect waves-light" type="submit">Сохранить</button>
+        </div>
+        <div class="input-field col s12">
+            <textarea id="description" class="materialize-textarea"></textarea>
+            <label for="description">Описание для поисковиков</label>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col s6">
+            <table class="bordered">
+                <tr>
+                    <td></td>
+                </tr>
+                {{#each cat_first_part}}
+                <tr>
+                    <td>
+                        <input type="checkbox" id="{{_id}}" />
+                        <label class="black-text" for="{{_id}}">{{name}}</label>
+                    </td>
+                </tr>
+                {{/each}}
+            </table>
+        </div>
+        <div class="col s6">
+            <table class="bordered">
+                <tr>
+                    <td></td>
+                </tr>
+                {{#each cat_second_part}}
+                <tr>
+                    <td>
+                        <input type="checkbox" id="{{_id}}" />
+                        <label class="black-text" for="{{_id}}">{{name}}</label>
+                    </td>
+                </tr>
+                {{/each}}
+            </table>
+        </div>
+    </div>
+</form>
+
+<style>
+    .margin {
+        margin: 15px 0 15px 15px;
+    }
+</style>
+
+<script>
+    $("#new_portal_form").submit((e) => {
+        e.preventDefault();
+
+        let portal = {
+            name: $("#name").val(),
+            count: $("#count").val(),
+            description: $("#description").val(),
+            categories: []
+        };
+
+        $("input[type='checkbox']").each((index, elem) => {
+            if (elem.checked) {
+                portal.categories.push(elem.id);
+            };
+        });
+
+        $.ajax({
+            url: "/api/portal_new",
+            type: "POST",
+            data: portal,
+            success: () => {
+                Materialize.toast('Элемент меню успешно создан!', 800);
+                setTimeout(() => {
+                    document.location.href = '/portals';
+                }, 800);
+            },
+            error: (err) => {
+                if (err.status == 401) {
+                    Materialize.toast('Вы не авторизированы.', 1000);
+                    setTimeout(() => {
+                        document.location.href = "/";
+                    }, 800);
+                } else {
+                    Materialize.toast('Упс, ошибка! Подробности в консоле.', 4000);
+                    console.log(err);
+                };
+            }
+        });
+
+    });
+
+</script>

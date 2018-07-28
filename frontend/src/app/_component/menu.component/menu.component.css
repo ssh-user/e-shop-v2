@@ -1,0 +1,84 @@
+/* Menu Header */
+.font_header{    
+    font-size: 1.4em;
+    cursor: default;
+    margin: 0;
+}
+
+.color_header_div{
+    background-color: #4dd0e1;
+}
+
+.padding_header{
+    padding: 10px;
+}
+
+
+/*header of element*/
+.padding{
+     padding: 0px;
+}
+
+.no_margin{
+    margin: 0;
+}
+
+.bold{
+    font-weight: bold;
+}
+
+.color_div{
+    background-color: #2980B9;
+}
+
+.color_div:hover{
+    background-color: #3da7ed;
+}
+
+.color_name{
+    color: white;
+}
+
+.full_menu_a{
+    display: block;
+    height: 100%;
+    width: 100%;
+    padding: 10px;
+}
+
+
+/*element menu*/
+.element_div_padding{
+    padding: 0;
+}
+
+.element_div_color{
+    background-color: lightgray;    
+}
+
+.element_color:hover{
+    background-color: #EEEEEE;    
+}
+
+.element_font_color{
+    color: #2A2A2A;
+}
+
+.element_font_size{
+    font-size: 1.1em;
+}
+
+.elemet_border{
+    border-bottom: 1px solid white;
+}
+
+.element_margin{
+    margin: 10px;
+}
+
+.full{
+    display: block;
+    height: 100%;
+    width: 100%;
+    padding: 10px;
+}

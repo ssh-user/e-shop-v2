@@ -1,0 +1,165 @@
+<div class="row">
+    <div class="col s12 menu_product row">
+        <div class="col s8">
+            {{> category_select categories=categories}}
+        </div>
+        <div class="col s4">
+            <a href="/product_new"><button class="btn blue waves-effect waves-light right btn_new_product">создать новый</button></a>
+        </div>
+    </div>
+    <div class="col s12 divider"></div>
+    <div class="col s12">
+        <table class="bordered striped">
+            <thead>
+                <tr>
+                    <th class="center">№</th>
+                    <th>Фото</th>
+                    <th><a class="black-text" href="?sort=name{{url}}">Название</a></th>
+                    <th>Цена</th>
+                    <th><a class="black-text" href="?sort=isStock{{url}}">Наличие</a></th>
+                    <th><a class="black-text" href="?sort=isRecommended{{url}}">Рекомен.</a></th>
+                    <th><a class="black-text" href="?sort=isShow{{url}}">Показывать</a></th>
+                    <th></th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                {{#each products}}
+                <tr id={{_id}}>
+                    <td class="center">{{increase @index}}</td>
+                    <td>
+                        <img class="img_list" src="/images/{{img image }}" alt="foto">
+                    </td>
+                    <td class="">{{name}}</td>
+                    <td>
+                        <p><span class="bold">{{tofixed price }}</span> грн.</p>
+                    </td>
+                    <td class="center">
+                        <input type="checkbox" id="isStock_{{ _id }}" {{#if isStock }}checked="checked" {{/if}}/>
+                        <label for="isStock_{{ _id }}"></label>
+                    </td>
+                    <td class="center">
+                        <input type="checkbox" id="isRecommended_{{ _id }}" {{#if isRecommended }} checked="checked" {{/if}}/>
+                        <label for="isRecommended_{{ _id }}"></label>
+                    </td>
+                    <td class="center">
+                        <input type="checkbox" id="isShow_{{ _id }}" {{#if isShow }} checked="checked" {{/if}}/>
+                        <label for="isShow_{{ _id }}"></label>
+                    </td>
+                    <td>
+                        <a href="/product/{{ _id }}" class="btn-floating btn-small waves-effect waves-light green"><i class="material-icons">edit</i></a>
+                    </td>
+                    <td>
+                        <a class="btn-floating btn-small waves-effect waves-light red btn_delete"><i class="material-icons">delete</i></a>
+                    </td>
+                </tr>
+                {{else}}
+                <tr>
+                    <td class="center" colspan="8">
+                        <h3>Список пуст</h3>
+                    </td>
+                </tr>
+                {{/each}}
+            </tbody>
+        </table>
+        <div class="pagination center">
+            <ul>
+                {{#paginate pagination type="first"}}
+                    <li {{#if disabled}}class="disabled" {{/if}}><a href="?page={{n}}">Первая</a></li>
+                {{/paginate}} 
+                {{#paginate pagination type="previous"}}
+                    <li {{#if disabled}}class="disabled" {{/if}}><a href="?page={{n}}{{url}}{{urlSort}}"><i class="material-icons">chevron_left</i></a></li>
+                {{/paginate}} 
+                {{#paginate pagination type="middle" limit="10"}}
+                    <li {{#if active}}class="active" {{/if}}><a href="?page={{n}}{{url}}{{urlSort}}">{{n}}</a></li>
+                {{/paginate}} 
+                {{#paginate pagination type="next"}}
+                    <li {{#if disabled}}class="disabled" {{/if}}><a href="?page={{n}}{{url}}{{urlSort}}"><i class="material-icons">chevron_right</i></a></li>
+                {{/paginate}}
+                {{#paginate pagination type="last"}}
+                    <li {{#if disabled}}class="disabled"{{/if}}><a href="?page={{n}}">Последняя</a></li>
+                {{/paginate}}
+            </ul>
+        </div>
+    </div>
+</div>
+
+
+<style>
+    .menu_product {
+        margin-bottom: 10px;
+    }
+
+    .btn_new_product {
+        margin: 19px 10px;
+    }
+
+    .img_list {
+        height: 75px;
+        width: 75px;
+    }
+
+    .bold {
+        font-weight: bold;
+    }
+</style>
+
+<script>
+    // checkboxs like Recommended\ Exist and other 
+    $('input[type="checkbox"]').on("click", (event) => {
+        let key = event.target.id.split('_')[0];
+        let value = document.getElementById(event.target.id).checked;
+        let data = {};
+        data[key] = value;
+
+        $.ajax({
+            url: `/api/product/${event.target.id.split('_')[1]}`,
+            type: 'PUT',
+            headers: {
+                "content-type": "application/json"
+            },
+            data: JSON.stringify(data),
+            success: function (msg) {
+            },
+            error: function (xhr) {
+                if (err.status == 401) {
+                    Materialize.toast('Вы не авторизированы.', 1000);
+                    setTimeout(() => {
+                        document.location.href = "/";
+                    }, 800);
+                } else {
+                    Materialize.toast('Упс, ошибка! Подробности в консоле.', 4000);
+                    console.log(err);
+                };
+            }
+        });
+
+    });
+
+
+    // btn delte
+    $(".btn_delete").on("click", function (e) {
+        let answ = confirm("Точно удалить?");
+        if (!answ) return; // stop function if false
+
+        $.ajax({
+            url: `/api/product/${$(this).parent().parent().attr('id')}`,
+            type: 'DELETE',
+            success: function (msg) {
+                document.location.reload();
+            },
+            error: function (err) {
+                if (err.status == 401) {
+                    Materialize.toast('Вы не авторизированы.', 1000);
+                    setTimeout(() => {
+                        document.location.href = "/";
+                    }, 800);
+                } else {
+                    Materialize.toast('Упс, ошибка! Подробности в консоле.', 4000);
+                    console.log(err);
+                };
+            }
+        });
+    });
+
+</script>

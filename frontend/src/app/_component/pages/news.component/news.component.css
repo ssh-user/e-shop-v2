@@ -1,0 +1,9 @@
+.size{
+    font-size: 2em;
+    font-weight: 700;
+    font-family: nautilus;
+}
+
+.height{
+    max-height: 400px;
+}

@@ -1,0 +1,32 @@
+<div [@openPage] class="row z-depth-4">
+    <div class="center">
+        <h4 class="headerName">Регистрация:</h4>
+    </div>
+    <form class="col s12" #loginForm="ngForm" novalidate (ngSubmit)="onSubmit(loginForm)">
+
+        <div class="row">
+            <div class="input-field col l6 m8 s12 offset-l3 offset-m2">
+                <input id="username" type="text" minlength="3" class="validate" name="username" ngModel required>
+                <label for="username">Логин</label>
+            </div>
+        </div>
+        <div class="row">
+            <div class="input-field col l6 m8 s12 offset-l3 offset-m2">
+                <input id="password" type="password" minlength="3" class="validate" name="password" ngModel required>
+                <label for="password">Пароль</label>
+            </div>
+        </div>
+        <div class="row">
+            <div class="input-field col l6 m8 s12 offset-l3 offset-m2">
+                <input id="email" type="email" class="validate " name="email" ngModel required pattern="[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?">
+                <label for="email">Почта</label>
+            </div>
+        </div>
+        <div class="row">
+            <div class="input-field col l6 m8 s12 offset-l3 offset-m2">
+                <input class="btn right" type="submit" [disabled]="loginForm.invalid" value="Зарегистрироваться" />
+            </div>
+        </div>
+
+    </form>
+</div>

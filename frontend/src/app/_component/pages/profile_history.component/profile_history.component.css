@@ -1,0 +1,15 @@
+.font{
+    font-size: 2em;
+    font-weight: 700;
+    font-family: nautilus;
+}
+
+.font2{
+    font-size: 1.5em;
+    font-weight: 500;    
+}
+
+.no_margin{
+    margin: 0;
+    padding: 0;
+}

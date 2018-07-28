@@ -1,0 +1,29 @@
+<div class="row section">
+
+    <div class="hide-on-small-only">
+        <banner></banner>
+    </div>
+
+    <div *ngIf="greet; then text" class="col s12 m12 l12"></div>
+
+    <div class="col s12 m12 l12">
+        <div *ngIf="recommendedItem; then products else preloader" class="row"></div>
+    </div>
+
+</div>
+
+
+<ng-template #text>
+    <div [@openPage] [froalaView]="greet"></div>
+</ng-template>
+
+<ng-template #preloader>
+    <preloader class="center"></preloader>
+</ng-template>
+
+<ng-template #products>
+    <h5 class="my_header">Акционный товар: </h5>
+    <div class="col s6 m4 l3 hoverable" *ngFor="let item of recommendedItem">
+        <product [item]="item"></product>
+    </div>
+</ng-template>

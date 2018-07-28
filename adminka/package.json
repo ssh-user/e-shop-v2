@@ -1,0 +1,29 @@
+{
+  "name": "adminko",
+  "version": "1.0.1",
+  "description": "admin panel",
+  "main": "app.js",
+  "scripts": {
+    "start": "NODE_ENV=production node app.js"
+  },
+  "author": "SSH",
+  "license": "ISC",
+  "dependencies": {
+    "body-parser": "^1.17.1",
+    "connect-mongo": "^1.3.2",
+    "cookie-parser": "^1.4.3",
+    "express": "^4.15.2",
+    "express-handlebars": "^3.0.0",
+    "express-session": "^1.15.3",
+    "formidable": "^1.1.1",
+    "handlebars-paginate": "^0.1.0",
+    "install": "^0.10.1",
+    "mongodb": "^2.2.25",
+    "mongodb-backup": "^1.6.9",
+    "mv": "^2.1.1",
+    "npm": "^5.3.0",
+    "passport": "^0.3.2",
+    "passport-local": "^1.0.0",
+    "serve-favicon": "^2.4.1"
+  }
+}

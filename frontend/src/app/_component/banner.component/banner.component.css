@@ -1,0 +1,10 @@
+.position{
+    position: relative;
+    opacity: 0.4;
+    z-index: 999;
+    top: 40%;
+}
+
+.hover:hover{
+    color: white !important;
+}

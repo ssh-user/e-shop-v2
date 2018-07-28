@@ -1,0 +1,30 @@
+<div class="nav-wrapper cyan lighten-2 z-depth-4">
+
+    <a routerLink="/" class="brand-logo"><img class="responsive-img" src="/assets/logo.png" alt="Logo"></a>
+    <a href="#" data-activates="menu-collapse" class="button-collapse"><i class="material-icons">menu</i></a>
+
+
+
+    <ul id="nav-mobile" class="right hide-on-med-and-down">
+        <li>
+            <search></search>
+        </li>
+        <li>
+            <a routerLink="/news" class="deep-purple-text text-darken-3 head_font">
+                Акции
+                <span *ngIf="countNews" class="new badge red" data-badge-caption="новых!">{{ countNews }}</span>
+            </a>
+        </li>
+        <li><a routerLink="/delivery" class="deep-purple-text text-darken-3 head_font">Доставка и оплата</a></li>
+        <li><a routerLink="/about" class="deep-purple-text text-darken-3 head_font">О нас</a></li>
+        <li><a routerLink="/contact" class="deep-purple-text text-darken-3 head_font">Контакты</a></li>
+        <li>
+            <div>
+                <a routerLink="/cart" class="red-text cart-size">
+                    <i class="large material-icons left cart-size">shopping_cart</i> Корзина: {{ productCounter }} шт.
+                </a>
+            </div>
+        </li>
+    </ul>
+
+</div>

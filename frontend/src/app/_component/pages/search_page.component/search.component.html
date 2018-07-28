@@ -1,0 +1,29 @@
+<h4 class="font">Результат поиска:</h4>
+
+<div [@openPage] *ngIf="searchList; else no_list">
+    <div *ngIf="searchList.length != 0; else no_list">
+
+        <div class="row">
+            <div class="col s6 m4 l3 hoverable" *ngFor="let item of searchList | paginate: { itemsPerPage: 8, currentPage: p }">
+
+                <product [item]="item"></product>
+
+            </div>
+            <div *ngIf="searchList.length > 8">
+                <pagination-controls 
+                    class="col s12 center" 
+                    previousLabel="Пред."
+                    nextLabel="След."
+                    (pageChange)="p = $event" 
+                    (click)="scroll()">
+                </pagination-controls>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+
+<ng-template #no_list>
+    <h3 class="center font red-text">Странно, нет такого товара :(</h3>
+</ng-template>

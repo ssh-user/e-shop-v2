@@ -1,0 +1,23 @@
+<div *ngIf="success; then graz else error"></div>
+
+
+<ng-template #graz>
+    <div [@openPage] class="section">
+        <div class="center">
+            <img src="/assets/grazz.jpg" alt="" class="circle responsive-img">
+        </div>
+        <div class="container center z-depth-4 yellow lighten-3 padding">
+            <p class="thanks">Спасибо за заказ!</p>
+            <p class="font">Номер вашего заказа <span class="red-text number">№{{ number | number : '3.0-0' }}</span></p>
+            <p class="font">В ближайшее рабочее время, с вами свяжется менеджер, для уточнения деталей.</p>
+            <p class="font">На Вашу почту, отправлена копия заказа (если вы указали почту).</p>
+        </div>
+    </div>
+</ng-template>
+
+<ng-template #error>
+    <p [@openPage] class="center red-text container z-depth-4 yellow lighten-3 padding_err font">
+        Простите, но тут ничего нет. Заказ, вы можете глянуть на вашей почте (если вы зарегистрированы или указали при оформлении
+        заказа).
+    </p>
+</ng-template>

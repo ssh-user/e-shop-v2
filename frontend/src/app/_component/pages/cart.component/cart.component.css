@@ -1,0 +1,16 @@
+.table-img{
+    max-height: 75px;
+}
+
+.bold{
+    font-size: 1.2em;
+    font-weight: 500;
+}
+
+.alert{
+    color: red;
+}
+
+.next{
+    margin-top: 20px;
+}

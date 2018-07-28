@@ -1,0 +1,17 @@
+<div *ngIf="banners" class="section">
+    <div class="slider">
+        <div class="col s12 center position">
+            <div class="prev z-depth-0 transparent left medium"><i class="fa fa-chevron-left fa-lg grey-text text-lighten-3 medium hover"></i></div>
+            <div class="next z-depth-0 transparent right medium"><i class="fa fa-chevron-right fa-lg grey-text text-lighten-3 medium hover"></i></div>
+        </div>
+        <ul class="slides">
+            <li *ngFor="let banner of banners">
+                <img src="/assets/banners/{{ banner.image }}">
+                <div class="caption left-align">
+                    <h3>{{ banner.title }}</h3>
+                    <h5 class="light grey-text text-lighten-3">{{ banner.body }}</h5>
+                </div>
+            </li>
+        </ul>
+    </div>
+</div>

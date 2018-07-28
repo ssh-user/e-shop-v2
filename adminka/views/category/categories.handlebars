@@ -1,0 +1,76 @@
+<div class="row">
+    <div class="col s12 menu_product">
+
+        <a href="/category_new"><button class="btn waves-effect waves-light right blue btn_new_product">создать новую</button></a>
+    </div>
+    <div class="col s12 divider"></div>
+    <div class="col s12">
+        <ul class="collection">
+            {{#each categories}}
+            <li class="collection-item avatar valign-wrapper">
+                <img class="circle" src="/images/{{img image }}" alt="foto">
+                <span class="title">{{ name }}</span>
+                <div class="secondary-content">
+                    <a data-id={{_id}} class="edit btn-floating btn-small waves-effect waves-light green"><i class="material-icons">edit</i></a>
+                    <a data-id={{_id}} class="delete btn-floating btn-small waves-effect waves-light red margin-left"><i class="material-icons">delete</i></a>
+                </div>
+            </li>
+            {{else}}
+            <li class="collection-item">Список пуст.</li>
+            {{/each}}
+        </ul>
+    </div>
+</div>
+
+
+<style>
+    .menu_product {
+        margin-bottom: 10px;
+    }
+
+    .btn_new_product {
+        margin: 19px 10px;
+    }
+
+    .title {
+        font-size: 1.3em !important;
+        font-style: italic;
+        font-weight: 500;
+    }
+
+    .margin-left {
+        margin-left: 15px;
+    }
+</style>
+
+
+<script>
+    $(".edit").on("click", (e) => {
+        document.location.href = "/category/" + e.currentTarget.dataset.id;
+    });
+
+    $(".delete").on("click", (e) => {
+        let answ = confirm("Точно удалить?");
+        if (!answ) return; // stop function if false
+
+        $.ajax({
+            url: "/api/category/" + e.currentTarget.dataset.id,
+            type: "DELETE",
+            success: () => {
+                document.location.reload();
+            },
+            error: (err) => {
+                if (err.status == 401) {
+                    Materialize.toast('Вы не авторизированы.', 1000);
+                    setTimeout(() => {
+                        document.location.href = "/";
+                    }, 800);
+                } else {
+                    Materialize.toast('Упс, ошибка! Подробности в консоле.', 4000);
+                    console.log(err);
+                };
+            }
+        });
+    });
+
+</script>

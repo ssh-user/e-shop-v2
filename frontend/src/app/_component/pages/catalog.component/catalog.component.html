@@ -1,0 +1,90 @@
+<div class="section">
+    <div class="row valign-wrapper panel z-depth-1">
+        <div class="col s5 valign-wrapper left">
+            <i (click)="changeView(true)" [ngClass]="{ 'icon_color_active': view == true }" class="waves-effect medium material-icons white-text z-depth-3 icon_color">view_module</i>
+            <i (click)="changeView(false)" [ngClass]="{ 'icon_color_active': view != true }" class="waves-effect medium material-icons white-text z-depth-3 icon_color margin_left">view_list</i>
+        </div>
+        <div class="col s6 center">
+            <div class="row no_margin ">
+                <div class="col s12">
+                    <div class="bold">Сортировка:</div>
+                </div>
+                <div class="col s12">
+                    <a (click)="sort('name')" [ngClass]="{ 'icon_color_active': view_sort == 'name' }" class="waves-effect waves-light btn icon_color">по имени</a>
+                    <a (click)="sort('price')" [ngClass]="{ 'icon_color_active': view_sort == 'price' }" class="waves-effect waves-light btn icon_color">по цене</a>
+                    <a (click)="sort('stock')" [ngClass]="{ 'icon_color_active': view_sort == 'stock' }" class="waves-effect waves-light btn icon_color">по наличию</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div *ngIf="itemList; else no_list">
+    <div *ngIf="itemList.length != 0; else empty_list">
+        <div *ngIf="view; then card_view else table_view"></div>
+    </div>
+</div>
+
+
+<ng-template #card_view>
+    <div class="row">
+        <div class="col s6 m4 l3 hoverable" *ngFor="let item of itemList | paginate: { itemsPerPage: 12, currentPage: p }">
+
+            <product [item]="item"></product>
+
+        </div>
+        <div *ngIf="itemList.length > 12">
+            <pagination-controls class="col s12 center" previousLabel="Пред." nextLabel="След." (pageChange)="p = $event" (click)="scroll()">
+            </pagination-controls>
+        </div>
+    </div>
+</ng-template>
+
+
+<ng-template #table_view>
+    <table class="bordered highlight">
+        <thead>
+            <tr></tr>
+        </thead>
+        <tbody>
+            <tr [@openPage] *ngFor="let item of itemList | paginate: { itemsPerPage: 12, currentPage: p }">
+                <td class="center"><img class="responsive-img table_img" src="/assets/images/{{ item?.image[0]?.length > 0 ? item.image[0] : 'default.png' }}"></td>
+                <td class="bold"><a [routerLink]="['/item', item._id]" class="blue-text">{{ item.name }}</a></td>
+                <td>
+                    <div *ngIf="item.priceStrip && item.priceStrip != 0" class="bold stripped">
+                        {{ item.priceStrip | discount:user.discount | number : '1.2-2' }} грн.
+                    </div>
+                    <div *ngIf="item.isStock" class="bold price">
+                        {{ item.price | discount:user.discount | number : '1.2-2' }} грн.
+                    </div>
+                    <div *ngIf="!item.isStock" class="bold price">
+                        Ожидается поставка.
+                    </div>
+                </td>
+                <td>
+                    <div class="quantity valign-wrapper">
+                        <div class="minus valign-wrapper" (click)="decrement($event)">-</div>
+                        <input class="center" type="number" min="1" max="99" step="1" value="1">
+                        <div class="plus valign-wrapper" (click)="increment($event)">+</div>
+                    </div>
+                </td>
+                <td>
+                    <button [disabled]="!item.isStock" (click)="table_view_addToCart($event, item)" class="btn-floating btn-large large waves-effect waves-light"><i class="material-icons">shopping_basket</i></button>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <div *ngIf="itemList.length > 12">
+        <pagination-controls class="col s12 center" previousLabel="Пред." nextLabel="След." (pageChange)="p = $event" (click)="scroll()">
+        </pagination-controls>
+    </div>
+</ng-template>
+
+
+<ng-template #no_list>
+    <preloader></preloader>
+</ng-template>
+
+<ng-template #empty_list>
+    <p class="bold nautilus"></p>
+</ng-template>

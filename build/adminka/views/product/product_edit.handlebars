@@ -1,0 +1,274 @@
+<form id="update_product_form" class="margin">
+    <div class="row">
+        <div class="col s6">
+
+            <div class="input-field section">
+                <input placeholder="Супер товар!" id="name" name="name" type="text" class="validate" value="{{product.name}}" required>
+                <label for="name">Название товара</label>
+            </div>
+
+            <div>
+                <div class="input-field section">
+                    <select id="category" name="category">
+                        {{#each categories }}
+                            {{#my_if _id ../product.category }}
+                                <option value="{{_id}}" data-icon="/images/{{img image }}" class="left circle truncate" selected>{{ name }}</option>                       
+                            {{else}}
+                                <option value="{{_id}}" data-icon="/images/{{img image }}" class="left circle truncate">{{ name }}</option>
+                            {{/my_if}}
+                        {{/each}}
+                    </select>
+                    <label for="category">Категория товара</label>
+                </div>
+            </div>
+
+            <div class="section row">
+                <div class="col s6 center">
+                    <input class="length" step="0.01" value="{{product.price}}" min="0" max="1000000" type="number" id="price" name="price" />
+                    <label for="price">Цена:</label>
+                </div>
+                <div class="col s6 center strike">
+                    <input class="length" step="0.01" value="{{product.priceStrip}}" min="0" max="1000000" type="number" id="priceStrip" name="priceStrip"
+                    />
+                    <label for="priceStrip">Цена:</label>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="input-field col s4 center">
+                    <input type="checkbox" id="isRecommended" name="isRecommended" {{#if product.isRecommended}}checked{{/if}} />
+                    <label for="isRecommended">Реком.</label>
+                </div>
+                <div class="input-field col s4 center">
+                    <input type="checkbox" id="isStock" name="isStock" {{#if product.isStock}}checked{{/if}}/>
+                    <label for="isStock">Наличие</label>
+                </div>
+                <div class="input-field col s4 center">
+                    <input type="checkbox" id="isShow" name="isShow" {{#if product.isShow}}checked{{/if}}/>
+                    <label for="isShow">Показывать</label>
+                </div>
+            </div>
+
+            <div class="section">
+                <div class="file-field input-field">
+                    <div class="btn">
+                        <span>Фото</span>
+                        <input type="file" name="image" id="image" accept="image/*">
+                    </div>
+                    <div class="file-path-wrapper">
+                        <input class="file-path validate" type="text">
+                    </div>
+                </div>
+            </div>
+
+            <div class="row center preview_div">
+                {{#each product.image }}
+                <div class="col s6 valign-wrapper center margin" id="{{ this }}">
+                    <img src="/images/{{ this }}" alt="image" class="img-size">
+                    <a data-image="{{ this }}" class="btn-floating btn-large waves-effect waves-light red margin_left" onclick="delete_image(event)">
+                        <i class="material-icons">delete</i>
+                    </a>
+                </div>
+                {{else}}
+                <div class="preview"></div>
+                {{/each}}
+            </div>
+
+        </div>
+        <div class="col s6">
+            <div class="input-field section">
+                <button id="save" class="btn right red lighten-1 waves-effect waves-light" type="submit">Обновить</button>
+            </div>
+            <div class="input-field section">
+                {{> froala_editor }}
+            </div>
+        </div>
+    </div>
+</form>
+
+<style>
+    .margin {
+        margin-top: 20px;
+        margin-left: 20px;
+    }
+
+    .margin_left {
+        margin-left: 20px;
+    }
+
+    .preview {
+        background-image: url('/default.png');
+        background-size: cover;
+        height: 250px;
+        width: 250px;
+        margin: auto;
+    }
+
+    .img-size {
+        height: 100px;
+    }
+
+    .strike {
+        text-decoration: line-through;
+    }
+
+    .length {
+        max-width: 100px;
+    }
+</style>
+
+<script>
+    // save array of images to future
+    let product = {{{json product }}};
+
+    // set product description to froala editor
+    $('#description').froalaEditor("html.set", `{{{ product.description }}}`);
+
+    // MATERIALIZECSS FORM SELECTOR
+    $('select').material_select();
+
+    // UPLOAD FILE PREVIEW 
+    $('#image').on('change', () => {
+        let files = $("#image")[0].files;
+
+        // if onChange cancelled and no images in Array - return defult image and interrupt function
+        if (files.length == 0) {
+            if (product.image.length == 0) {
+                $(".preview_div").html(`<div class="preview"></div>`);
+                return;
+            };
+        };
+
+        // remove "preview" div from DOM
+        $("div").remove(".preview");
+
+        for (let index = 0; index < files.length; ++index) {
+            let id = guid();
+            let data = new FormData();
+            data.append("name", files[index].name);
+            data.append("file", files[index]);
+
+            let html = `
+                <div class="col s6 row-size valign-wrapper center margin" id="${ id}">
+                    <div class="progress">
+                        <div class="indeterminate"></div>
+                    </div>
+                </div>`;
+
+            $(".preview_div").append(html);
+
+            $.ajax({
+                url: "/api/product_image",
+                type: "POST",
+                data: data,
+                processData: false,
+                contentType: false,
+
+                success: (imageName) => {
+                    // remove "preview" div from DOM
+                    $("div").remove(".preview");
+
+                    // add image name to array (then array add to product)
+                    product.image.push(imageName);
+
+                    let html = `                        
+                            <img src="/images/${imageName}" alt="image" class="img-size">
+                            <a data-image="${imageName}" class="btn-floating btn-large waves-effect waves-light red margin_left" onclick="delete_image(event)">
+                                <i class="material-icons">delete</i>
+                            </a>`;
+                    document.getElementById(id).innerHTML = html;
+
+                    // clear input
+                    $("#image").val(null);
+                    $("#image_path").val(null);
+                },
+                error: (err) => {
+                    Materialize.toast('Упс, ошибка! Не удалось загрузить изображение.', 4000);
+                }
+
+            });
+        };
+    });
+
+    //delete image
+    function delete_image(e) {
+        let element = e.currentTarget;
+        let fileName = element.dataset.image;
+
+        console.log("element - ", element);
+        console.log("filename - ", fileName);
+
+        $.ajax({
+            url: "/api/product_image",
+            type: "DELETE",
+            data: { name: fileName },
+            success: () => {
+                // delete from array
+                for (let i = 0; i < product.image.length; ++i) {
+                    if (product.image[i] == fileName) product.image.splice(i, 1);
+                };
+
+                // delete from DOM
+                $(element).parent().remove();
+
+                // set DEFAULT image if array is empty
+                if (product.image.length == 0) $(".preview_div").html(`<div class="preview"></div>`);
+            },
+            error: (err) => {
+                Materialize.toast('Упс, ошибка! Не удалось удалить изображение.', 4000);
+            }
+        });
+    };
+
+    //BUTTON SAVE
+    $("#update_product_form").submit((e) => {
+        e.preventDefault();
+
+        let updProduct = {
+            name: $("#name").val(),
+            category: $("#category").val(),
+            isRecommended: $("#isRecommended").is(":checked"),
+            isStock: $("#isStock").is(":checked"),
+            isShow: $("#isShow").is(":checked"),
+            description: $('#description').froalaEditor('html.get', true),
+            priceStrip: $("#priceStrip").val().replace(",", "."),
+            price: $("#price").val().replace(",", "."),
+            image: product.image
+        };
+
+        $.ajax({
+            url: "/api/product_edit/" + product._id,
+            type: "PUT",
+            data: updProduct,
+            success: () => {
+                Materialize.toast('Товар обновлён!', 800);
+                setTimeout(() => {
+                    document.location.href = document.referrer;
+                }, 800);
+            },
+            error: (err) => {
+                if (err.status == 401) {
+                    Materialize.toast('Вы не авторизированы.', 1000);
+                    setTimeout(() => {
+                        document.location.href = "/";
+                    }, 800);
+                } else {
+                    Materialize.toast('Упс, ошибка! Подробности в консоле.', 4000);
+                    console.log(err);
+                };
+            }
+
+        });
+    });
+
+    function guid() {
+        function s4() {
+            return Math.floor((1 + Math.random()) * 0x10000)
+                .toString(16)
+                .substring(1);
+        };
+        return s4() + s4() + '-' + s4() + '-' + s4() + '-' +
+            s4() + '-' + s4() + s4() + s4();
+    };
+
+</script>

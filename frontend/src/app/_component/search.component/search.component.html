@@ -1,0 +1,18 @@
+<div>
+    <form id="searchbox" class="valign-wrapper height" action="">
+        <input id="search" type="text" placeholder="Поиск ..." class="browser-default black-text" (keyup.enter)="enter()" (keyup)="searchTerm$.next($event.target.value)"
+            (focusin)="showSearchResultChange(true)" (focusout)="showSearchResultChange(false)" autocomplete="off" required>
+        <input id="submit" type="submit" value="Поиск" class="hide-on-med-and-down" (click)="enter()">
+    </form>
+    <div class="list z-depth-4" *ngIf="searchList && showSearchResult">
+        <ul>
+            <li [@openPage] class="valign-wrapper" *ngFor="let item of searchList | slice:0:5" (click)="onSelect(item)">
+                <img src="/assets/images/{{ item.image[0] }}" alt="foto" class="circle">
+                <p class="truncate font blue-text">{{ item.name }}</p>
+            </li>
+            <li *ngIf="searchList.length > 5">
+                <a class="blue-text right" [routerLink]="['/search']"><b>Все результаты</b></a>
+            </li>
+        </ul>
+    </div>
+</div>

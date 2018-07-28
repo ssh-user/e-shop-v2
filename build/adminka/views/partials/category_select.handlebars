@@ -1,0 +1,39 @@
+<form id="my_form" action="/products">
+    <div class="valign-wrapper">
+        <div class="input-field col s7">
+            <select name="category">                
+                <option value="" >Все товары</option> 
+                {{#each categories }}
+                    {{#my_if ../category.category this._id }}
+                        <option selected value="{{_id}}" data-icon="images/{{img image }}" class="left circle truncate">{{ name }}</option>
+                    {{else}}
+                        <option value="{{_id}}" data-icon="images/{{img image }}" class="left circle truncate">{{ name }}</option>
+                    {{/my_if}}
+                
+                {{/each}}
+            </select>
+        </div>
+        <div class="input-field col s1">
+            <select name="limit">
+                {{#each numbersOnPage }}
+                    {{#my_if this ../numbersOnPageCurr }}
+                        <option selected value="{{ this }}">{{ this }}</option>
+                    {{else}}
+                        <option value="{{ this }}">{{ this }}</option>
+                    {{/my_if}}                
+                {{/each}}
+            </select>
+        </div>
+        <div class=" col s4">
+            <input class="btn" type="submit" value="Фильтровать">
+        </div>
+    </div>
+</form>
+
+
+<script>
+    $(document).ready(function () {
+        $('select').material_select();
+    });
+
+</script>

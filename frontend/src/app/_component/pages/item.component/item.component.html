@@ -1,0 +1,66 @@
+<div *ngIf="item; then item_here else item_no"></div>
+
+
+
+<ng-template #item_no>    
+    <preloader></preloader>
+</ng-template>
+
+
+<ng-template #item_here>
+    <div [@openPage] class="row section">
+
+        <div class="col s12 m6 l6">
+            <div *ngIf="item?.image[0]?.length > 0; then imageLoop else defaultImage"></div>
+            <ng-template #imageLoop>
+                <div class="fotorama section" data-auto="false" data-transition="dissolve" data-loop="true" data-arrows="true" data-click="true"
+                    data-swipe="true" data-trackpad="true" data-navposition="bottom" data-nav="thumbs" data-allowfullscreen="true">
+
+                    <img *ngFor="let my_image of item.image" src="/assets/images/{{ my_image }}">
+                </div>
+            </ng-template>
+
+            <ng-template #defaultImage>
+                <div class="center responsive-img">
+                    <img src="/assets/images/default.png">
+                </div>
+            </ng-template>
+        </div>
+
+        <div class="col s12 m6 l6">
+            <div class="">
+                <div class="row buy_position valign-wrapper center">
+                    <div class="col s4 m4 l4">
+                        <div *ngIf="item.priceStrip && item.priceStrip != 0" class="bold stripped">
+                            {{ item.priceStrip | discount:user.discount | number : '1.2-2' }} грн.
+                        </div>
+                        <div *ngIf="item.isStock" class="bold price">
+                            {{ item.price | discount:user.discount | number : '1.2-2' }} грн.
+                        </div>
+                        <div *ngIf="!item.isStock" class="bold price">
+                            Ожидается поставка.
+                        </div>
+                    </div>
+                    <div class="col s4 m4 l4 quantity valign-wrapper">
+                        <div class="minus valign-wrapper bold" (click)="decrement($event)">-</div>
+                        <input id="count" class="center" type="number" min="1" max="99" step="1" value="1">
+                        <div class="plus valign-wrapper" (click)="increment($event)">+</div>
+                    </div>
+                    <div class="col s4 m4 l4 center">
+                        <button [disabled]="!item.isStock" (click)="buy()" class="btn  waves-effect waves-light">
+                        В корзину
+                    </button>
+                        <p *ngIf="item.isStock" class="no_margin price">В наличии</p>
+                    </div>
+                </div>
+            </div>
+            <div class="">
+                <p class="center productName">{{ item.name }}</p>
+                <div [froalaView]="item.description"></div>
+            </div>
+        </div>
+
+
+
+    </div>
+</ng-template>

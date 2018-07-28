@@ -1,0 +1,64 @@
+<form class="row col s12" id="admin">
+    <div class="col s12 m12 l12 margin">
+        <button type="submit" class="btn right red lighten-1 waves-effect waves-light">Сохранить</button>
+    </div>
+
+    <div class="row">
+        <div class="input-field col s6">
+            <input id="username" type="text" class="validate" placeholder="Имя" required>
+            <label for="username">Имя</label>
+        </div>
+        <div class="input-field col s6">
+            <input id="password" type="text" class="validate" placeholder="Пароль" required>
+            <label for="password">Пароль</label>
+        </div>
+    </div>
+
+</form>
+
+
+
+
+<style>
+    .margin {
+        margin-top: 20px;
+        margin-left: 20px;
+    }
+</style>
+
+<script>
+    //BUTTON SAVE
+    $("#admin").submit((e) => {
+        e.preventDefault();
+
+        let admin = {
+            username: $("#username").val(),
+            password: $("#password").val()
+        };
+
+        $.ajax({
+            url: "/api/admin/",
+            type: "POST",
+            data: admin,
+            success: () => {
+                Materialize.toast('Пользователь успешно создан!', 800);
+                setTimeout(() => {
+                    document.location.href = "/users";
+                }, 800);
+            },
+            error: (err) => {
+                if (err.status == 401) {
+                    Materialize.toast('Вы не авторизированы.', 1000);
+                    setTimeout(() => {
+                        document.location.href = "/";
+                    }, 800);
+                } else {
+                    Materialize.toast('Упс, ошибка! Подробности в консоле.', 4000);
+                    console.log(err);
+                };
+            }
+
+        });
+    });
+
+</script>

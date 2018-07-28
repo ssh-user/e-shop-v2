@@ -1,0 +1,9 @@
+/compiled
+
+# or
+
+*.ngFactory.ts
+
+# or no change needed if you already have
+
+*.ts

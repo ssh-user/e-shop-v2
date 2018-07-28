@@ -1,0 +1,23 @@
+.padding{
+    padding: 5px;
+}
+
+.padding_err{
+    padding: 15px;
+}
+
+.thanks{
+    font-family: Verdana, Geneva, Tahoma, sans-serif;
+    font-size: 2em;
+    font-weight: 600;
+    font-style: italic;
+}
+
+.font{
+    font-size: 1.6em;
+    font-weight: 400;
+}
+
+.number{    
+    font-weight: 800;
+}

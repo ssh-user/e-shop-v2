@@ -1,0 +1,23 @@
+<div *ngIf="user" class="z-depth-4 auth_settings">
+    <div class="row valign-wrapper">
+        <div class="col s4 m4 l4">
+            <img src="/assets/userpics/{{ user.image }}" alt="" class="circle responsive-img padding_top">
+        </div>
+
+        <div *ngIf="this.auth._isAuthorized; then auth_pass else auth_fail"></div>
+
+    </div>
+</div>
+
+<ng-template #auth_pass>
+    <div class="col s8 m8 l8">
+        <a routerLink="/profile"><span class="user_name_color truncate center enter">{{ user.username }}</span></a>
+    </div>
+</ng-template>
+
+<ng-template #auth_fail>
+    <div class="col s8 m8 l8">
+        <a routerLink="/login"><span class="enter truncate center">вход</span></a>
+        <a routerLink="/reg"><span class="enter truncate center">регистрация</span></a>
+    </div>
+</ng-template>

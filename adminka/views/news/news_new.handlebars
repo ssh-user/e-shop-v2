@@ -1,0 +1,128 @@
+<form id="new_news_form" class="margin">
+    <div class="row">
+        <div class="col s10">
+
+            <div class="input-field section">
+                <input placeholder="Супер акция!" id="title" name="title" type="text" class="validate" required>
+                <label for="title">Название акции</label>
+            </div>
+
+            <div class="section">
+                <textarea name="description" id="description"></textarea>
+            </div>
+
+            <div class="section">
+                <div class="file-field input-field">
+                    <div class="btn">
+                        <span>Фото</span>
+                        <input type="file" name="image" id="image" accept="image/*">
+                    </div>
+                    <div class="file-path-wrapper">
+                        <input class="file-path validate" type="text">
+                    </div>
+                </div>
+            </div>
+
+            <div class="section center">
+                <div class="preview"></div>
+            </div>
+
+        </div>
+
+        <div class="col s2">
+            <div class="input-field section">
+                <button id="save" class="btn right red lighten-1 waves-effect waves-light" type="submit">Сохранить</button>
+            </div>
+        </div>
+
+    </div>
+</form>
+
+
+
+
+<style>
+    .margin {
+        margin-top: 20px;
+        margin-left: 20px;
+    }
+
+    .preview {
+        background-image: url('/images/default.png');
+        background-size: cover;
+        height: 250px;
+        width: 250px;
+        margin: auto;
+    }
+</style>
+
+<script>
+    // FROALA
+    $('#description').froalaEditor({
+        charCounterCount: true,
+        height: 400,
+        quickInsertButtons: false,
+        toolbarButtons: [
+            'fontSize', '|',
+            'bold', 'italic', 'underline', 'strikeThrough', '|',
+            'emoticons', 'color', 'align', '|',
+            'formatOL'
+        ]
+    });
+    $('#description').froalaEditor("html.set", ``);
+
+
+    // UPLOAD FILE PREVIEW 
+    $('#image').on('change', () => {
+        let file = $("#image")[0].files[0];
+        let reader = new FileReader();
+
+        reader.onloadend = function () {
+            $('.preview')[0].style.backgroundImage = "url('')";
+            $('.preview')[0].style.backgroundImage = "url(" + reader.result + ")";
+        };
+        if (file) reader.readAsDataURL(file);
+    });
+
+    //BUTTON SAVE
+    $("#new_news_form").submit((e) => {
+        e.preventDefault();
+        let image_file = $("#image")[0].files[0];
+
+        let data = new FormData();
+        data.append("title", $("#title").val());
+        data.append("description", $('#description').froalaEditor('html.get', true));
+        if (image_file) {
+            data.append("image", image_file.name);
+            data.append("file", image_file);
+        } else {
+            data.append("image", "default.png");
+        };
+
+        $.ajax({
+            url: "/api/news_new",
+            type: "POST",
+            data: data,
+            processData: false,
+            contentType: false,
+            success: () => {
+                Materialize.toast('Акция успешно создана!', 800);
+                setTimeout(() => {
+                    document.location.href = '/all_news';
+                }, 800);
+            },
+            error: (err) => {
+                if (err.status == 401) {
+                    Materialize.toast('Вы не авторизированы.', 1000);
+                    setTimeout(() => {
+                        document.location.href = "/";
+                    }, 800);
+                } else {
+                    Materialize.toast('Упс, ошибка! Подробности в консоле.', 4000);
+                    console.log(err);
+                };
+            }
+        });
+    });
+
+</script>

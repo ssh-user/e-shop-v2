@@ -1,0 +1,19 @@
+<div [@openPage] class="row z-depth-4 ">
+    <div class="center">
+        <h4 class="headerName">Восстановление пароля:</h4>
+        <p class="red-text">Пожалуйста, введите адрес электронной почты, указанный в вашей учетной записи.</p>
+    </div>
+    <form class="col s12" #loginForm="ngForm" novalidate (ngSubmit)="onSubmit(loginForm)">
+
+        <div class="row">
+            <div class="input-field col l6 m8 s12 offset-l3 offset-m2">
+                <input id="email" type="email" minlength="5" class="validate" name="email" ngModel required pattern="[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?">
+                <label for="email">Email</label>
+            </div>
+        </div>
+        <div class="row center">
+            <input class="btn center" type="submit" [disabled]="loginForm.invalid" value="Восстановить пароль" />
+        </div>
+
+    </form>
+</div>

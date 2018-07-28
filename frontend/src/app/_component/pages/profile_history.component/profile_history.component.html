@@ -1,0 +1,47 @@
+<div *ngIf="orders; then orders_come else no_orders"></div>
+
+<ng-template #no_orders>
+    <preloader></preloader>
+</ng-template>
+
+<ng-template #orders_come>
+    <div *ngIf="orders.length == 0; then empty else normal_view"></div>
+</ng-template>
+
+
+<ng-template #empty>
+    <p class="center red-text font">У вас еще нет никаких заказов.</p>
+</ng-template>
+
+<ng-template #normal_view>
+    <p class="font">История заказов:</p>
+    <div class="hoverable" *ngFor="let order of orders | paginate: { itemsPerPage: 8, currentPage: p }">
+        <table class="responsive-table">
+            <tbody>
+                <tr id="{{ order._id }}">
+                    <td class="no_margin">
+                        <i (click)="fullOrder($event)" class="material-icons medium green-text">add_box</i>
+                    </td>
+                    <td class="no_margin">
+                        <p class="font2">Заказ № {{ order.orderNumber | number : '3.0-0' }}</p>
+                    </td>
+                    <td class="no_margin center">
+                        <p class="font2">{{ order.sum | number : '1.2-2' }} грн.</p>
+                    </td>
+                    <td class="no_margin right">
+                        <p class="font2">{{ order.time | date:'yyyy-MM-dd HH:mm:ss'}}</p>
+                    </td>
+                </tr>
+                <tr class="hide toggle">
+                    <td colspan="4" class="outer">
+                        <p class="font2">Идет загрузка ...</p>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    <div *ngIf="orders.length > 8">
+        <pagination-controls class="col s12 center" previousLabel="Пред." nextLabel="След." (pageChange)="p = $event" (click)="scroll()">
+        </pagination-controls>
+    </div>
+</ng-template>

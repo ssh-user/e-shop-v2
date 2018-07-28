@@ -1,0 +1,31 @@
+<div>
+    <ul class="side-nav" id="menu-collapse">
+        <li>
+            <auth-menu></auth-menu>
+        </li>
+        <div class="divider"></div>
+        <li>
+            <a routerLink="/cart" class="orange-text text-darken-4">
+                <i class="large material-icons ">shopping_cart</i> Корзина: {{ productCounter }} шт.
+            </a>
+        </li>
+        <div class="divider"></div>
+        <li>
+            <a routerLink="/news"> 
+                Акции 
+                <span *ngIf="countNews" class="new badge red" data-badge-caption="новых!">{{ countNews }}</span>
+            </a>
+        </li>
+        <li><a routerLink="/delivery">Доставка</a></li>
+        <li><a routerLink="/about">О нас</a></li>
+        <li><a routerLink="/contact">Контакты</a></li>
+
+        <div class="divider"></div>
+
+        <div *ngIf="daughtersMenu">
+            <li *ngFor="let category of daughtersMenu">
+                <a [routerLink]="['portal', category._id]">{{ category.name }}</a>
+            </li>
+        </div>
+    </ul>
+</div>

@@ -1,0 +1,66 @@
+<div class="section">
+    <div class="row">
+        <div class="col s12 section">
+            <a href="/banner_new"><button class="btn waves-effect waves-light right btn_new_product">создать новый</button></a>
+        </div>
+
+        <div class="col s12">
+            <div class="row section">
+                {{#each banners}}
+                <div class="col s6 m6 l6">
+                    <div class="card hoverable">
+                        <div class="card-image">
+                            <img class="" src="/banners/{{ this.image }}">
+                        </div>
+                        <div class="card-action center">
+                            <a href="/banner/{{ this._id }}" class="edit btn-floating btn-small waves-effect waves-light green margin"><i class="material-icons">edit</i></a>
+                            <a data-id={{ this._id }} class="delete btn-floating btn-small waves-effect waves-light red margin"><i class="material-icons">delete</i></a>
+                        </div>
+                    </div>
+                </div>
+                {{else}}
+                <div>
+                    <h4>Баннеров - нет.</h4>
+                </div>
+                {{/each}}
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<style>
+    .margin {
+        margin: 0 10px;
+    }
+</style>
+
+
+<script>
+    $(".delete").on("click", (e) => {
+        let answ = confirm("Точно удалить?");
+        if (!answ) return; // stop function if false
+
+        console.log(e.currentTarget.dataset.id);
+
+        $.ajax({
+            url: "/api/banner/" + e.currentTarget.dataset.id,
+            type: "DELETE",
+            success: () => {
+                document.location.reload();
+            },
+            error: (err) => {
+                if (err.status == 401) {
+                    Materialize.toast('Вы не авторизированы.', 1000);
+                    setTimeout(() => {
+                        document.location.href = "/";
+                    }, 800);
+                } else {
+                    Materialize.toast('Упс, ошибка! Подробности в консоле.', 4000);
+                    console.log(err);
+                };
+            }
+        });
+    });
+
+</script>

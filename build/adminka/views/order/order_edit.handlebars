@@ -1,0 +1,342 @@
+<div class="row">
+    <div class="col s6">
+        <p class="font center bold blue-text">Заказ: № <span class="red-text bold">{{ order.orderNumber }}</span></p>
+    </div>
+    <div class="col s6">
+        <div class="row right">
+            <a id="btn_wait" class="waves-effect waves-light btn blue margin-top">Ожидает</a>
+            <a id="btn_process" class="waves-effect waves-light btn green margin-top">Обработан</a>
+            <a id="btn_archive" class="waves-effect waves-light btn red margin-top">В архив</a>
+        </div>
+    </div>
+
+    <div class="col s12">
+        <div class="row valign-wrapper center">
+            <div class="col s3 input-field">
+                <input type="text" id="username" class="center" value="{{ order.user.username }}">
+                <label for="username">Логин</label>
+            </div>
+            <div class="col s3 input-field">
+                <input type="text" id="fio" class="center" value="{{ order.user.fio }}">
+                <label for="fio">ФИО</label>
+            </div>
+            <div class="col s3 input-field">
+                <input type="text" id="phone" class="center" value="{{ order.user.phone }}">
+                <label for="phone">Телефон</label>
+            </div>
+            <div class="col s3 input-field">
+                <input type="text" id="secondphone" class="center" value="{{ order.user.secondphone }}">
+                <label for="secondphone">Доп тел.</label>
+            </div>
+        </div>
+        <div class="col s12 input-field">
+            <div class="col s3 input-field">
+                <input type="email" id="email" class="center" value="{{ order.user.email }}">
+                <label for="email">Почта</label>
+            </div>
+            <div class="col s9 input-field">
+                <input type="text" id="adress" class="center" value="{{ order.user.adress }}">
+                <label for="adress">Адрес</label>
+            </div>
+        </div>
+        <div class="col s12 input-field">
+            <textarea id="user_note" class="materialize-textarea">{{ order.user.note }}</textarea>
+            <label for="user_note">Заметка покупателя</label>
+        </div>
+        <div class="col s12 input-field">
+            <textarea id="admin_note" class="materialize-textarea">{{ order.adminNote }}</textarea>
+            <label for="admin_note">Заметки администратора</label>
+        </div>
+    </div>
+
+    <div id="order">
+        <div class="col s12">
+            <p class="font center bold blue-text">Заказанные товары:</p>
+        </div>
+        <div class="col s12">
+            <div class="row center">
+                <div class="col s3">
+                    <select id="category" class="icons">
+                        <option value="" disabled selected>Выберите категорию</option>
+                        {{#each categories }}
+                            <option value="{{_id}}" data-icon="/images/{{img image }}" class="left circle truncate">{{ name }}</option>
+                        {{else}}
+                            <option selected value="" data-icon="/images/{{img "default.png" }}" class="left circle truncate">Нет категорий</option>
+                        {{/each}}
+                    </select>
+                </div>
+                <div class="col s6">
+                    <select id="product" class="icons">
+                        <option value="" disabled selected>Выберите товар</option>
+                    </select>
+                </div>
+                <div class="col s3">
+                    <a class="waves-effect waves-light btn green add">добавить</a>
+                </div>
+            </div>
+        </div>
+        <table class="striped centered">
+            <thead>
+                <tr>
+                    <th>Фото</th>
+                    <th>
+                        <p>Название</p>
+                    </th>
+                    <th>
+                        <p>Цена</p>
+                    </th>
+                    <th>
+                        <p>Количество</p>
+                    </th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody id="list">
+                {{#each order.order}}
+                <tr id={{this._id}}>
+                    <td>
+                        <img class="img_list" src="/images/{{img this.image }}" alt="foto">
+                    </td>
+                    <td>
+                        <p class="bold">{{ this.name }}</p>
+                    </td>
+                    <td class="bold">
+                        <p>{{tofixed this.price }}</p>
+                    </td>
+                    <td>
+                        <input class="number center" style="width: 50px" type="number" min="1" step="1" value="{{ this.count }}">
+                    </td>
+                    <td>
+                        <a class="btn-floating btn-small waves-effect waves-light red btn_delete"><i class="material-icons">delete</i></a>
+                    </td>
+                </tr>
+                {{else}}
+                <tr>
+                    <td colspan="6">
+                        <p>А вот эту надпись, вы вообще никогда видеть не должны!</p>
+                    </td>
+                </tr>
+                {{/each}}
+                <tr>
+                    <td colspan="3">
+                        <p class="bold font"><span class="red-text">Итого</span>:</p>
+                    </td>
+                    <td colspan="2">
+                        <p class="bold font"><span id="sum" class="red-text">Считаем ..</span> грн.</p>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<style>
+    .font {
+        font-size: 1.5em;
+    }
+
+    .bold {
+        font-weight: bold;
+    }
+
+    .margin-top {
+        margin-top: 10px;
+    }
+
+    .img_list {
+        height: 75px;
+        width: 75px;
+    }
+</style>
+
+<script>
+    let copyOrder = {{{json order}}};
+
+    $('select').material_select();
+
+    // detect change of category
+    $("#category").on("change", (e) => {
+        let categoryID = e.currentTarget.options[e.currentTarget.selectedIndex].value;
+
+        $.ajax({
+            url: `/product/category/${categoryID}`,
+            type: 'GET',
+            success: function (array) {
+                let products = JSON.parse(array);
+
+                // get product selector, delete all options except first and insert income array
+                let selector = document.getElementById("product");
+
+                let html = `<option value="" disabled selected>Выберите товар</option>`;
+                for (let elem of products) {
+                    html += `<option value="${elem._id}" data-icon="/images/${elem.image[0]}" class="left circle truncate">${elem.name}</option>`;
+                };
+
+                selector.innerHTML = html;
+                $('select').material_select();
+            },
+            error: function (err) {
+                if (err.status == 401) {
+                    Materialize.toast('Вы не авторизированы.', 1000);
+                    setTimeout(() => {
+                        document.location.href = "/";
+                    }, 800);
+                } else {
+                    Materialize.toast('Упс, ошибка! Подробности в консоле.', 4000);
+                    console.log(err);
+                };
+            }
+        });
+    });
+
+    // add product to order
+    $(".add").on("click", () => {
+        let selector = document.getElementById("product");
+        let productID = selector.options[selector.selectedIndex].value;
+
+
+        $.ajax({
+            url: `/api/product/${productID}`,
+            type: 'GET',
+            success: function (obj) {
+                let product = JSON.parse(obj);
+
+                // add default "count"
+                product.count = 1;
+                // change price to price with USER discount
+                product.price = (+product.price - ((+product.price * +copyOrder.user.discount) / 100)).toFixed(2);
+
+                copyOrder.order.push(product);
+
+                let html = `
+                <tr id=${product._id}>
+                    <td>
+                        <img class="img_list" src="/images/${product.image}" alt="foto">
+                    </td>
+                    <td>
+                        <p class="bold">${product.name}</p>
+                    </td>
+                    <td class="bold">
+                        <p>${product.price}</p> 
+                    </td>
+                    <td>
+                        <input class="number" style="width: 50px" type="number" min="1" step="1" value="${product.count}">
+                    </td>
+                    <td>
+                        <a class="btn-floating btn-small waves-effect waves-light red btn_delete"><i class="material-icons">delete</i></a>
+                    </td>
+                </tr>`;
+
+                $('#list > tr:last').before(html);
+                reBindEvents();
+                countSum();
+            },
+            error: function (err) {
+                if (err.status == 401) {
+                    Materialize.toast('Вы не авторизированы.', 1000);
+                    setTimeout(() => {
+                        document.location.href = "/";
+                    }, 800);
+                } else {
+                    Materialize.toast('Упс, ошибка! Подробности в консоле.', 4000);
+                    console.log(err);
+                };
+            }
+        });
+    });
+
+    // buttons (stupid code, i agree)
+    $("#btn_wait").on("click", (e) => {
+        copyOrder.status = "wait";
+        sendToServerUpdatedInfo();
+    });
+
+    $("#btn_process").on("click", (e) => {
+        copyOrder.status = "process";
+        sendToServerUpdatedInfo();
+    });
+
+    $("#btn_archive").on("click", (e) => {
+        copyOrder.status = "archive";
+        sendToServerUpdatedInfo();
+    });
+
+    function sendToServerUpdatedInfo() {
+        copyOrder.user.username = $("#username").val();
+        copyOrder.user.phone = $("#phone").val();
+        copyOrder.user.secondphone = $("#secondphone").val();
+        copyOrder.user.adress = $("#adress").val();
+        copyOrder.user.email = $("#email").val();
+        copyOrder.user.note = $("#user_note").val();
+        copyOrder.adminNote = $("#admin_note").val();
+
+        $.ajax({
+            url: `/api/order/${copyOrder._id}`,
+            type: 'PUT',
+            data: copyOrder,
+            success: function (msg) {
+                document.location.href = "/orders";
+            },
+            error: function (err) {
+                if (err.status == 401) {
+                    Materialize.toast('Вы не авторизированы.', 1000);
+                    setTimeout(() => {
+                        document.location.href = "/";
+                    }, 800);
+                } else {
+                    Materialize.toast('Упс, ошибка! Подробности в консоле.', 4000);
+                    console.log(err);
+                };
+            }
+        });
+    };
+
+    // safe rebind events
+    function reBindEvents() {
+        // delete product from order
+        $(".btn_delete").off("click").on("click", function (e) {
+            // get 'tr' element
+            let tr = e.currentTarget.parentElement.parentElement;
+
+            // delete element from copy of order
+            let indexToDel = copyOrder.order.findIndex((elem) => {
+                if (elem._id == tr.id) return true;
+                else return false;
+            });
+
+            if (indexToDel != -1) copyOrder.order.splice(indexToDel, 1);
+
+            // delete element from DOM
+            tr.remove();
+            countSum();
+        });
+
+        // change when count of products changed
+        $(".number").off("change").on("change", (e) => {
+            let indexToChange = copyOrder.order.findIndex((elem) => {
+                if (elem._id == e.currentTarget.parentElement.parentElement.id) return true;
+                else return false;
+            });
+
+            if (indexToChange != -1) {
+                copyOrder.order[indexToChange].count = e.currentTarget.value;
+                countSum();
+            };
+        });
+    };
+
+    // count final sum
+    function countSum() {
+        let sum = 0;
+        for (let order of copyOrder.order) {
+            sum += order.count * order.price;
+        };
+
+        $("#sum").html(sum.toFixed(2));
+    };
+
+    // first call
+    reBindEvents();
+    countSum();
+
+</script>

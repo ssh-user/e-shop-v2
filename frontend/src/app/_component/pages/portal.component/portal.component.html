@@ -1,0 +1,31 @@
+<div *ngIf="category; then text else preloader"></div>
+
+<ng-template #text>
+    <h3 class="headerName center deep-purple-text text-darken-3">{{ category.name }}</h3>
+    <div class="row">
+        <div *ngIf="category.categories.length == 0; then empty else normalView"></div>
+        <ng-template #empty>
+            <div>
+                <p class="card_portal center red-text">Простите, в данном разделе, нет никаких категорий. Возможно их еще не успели добавить.</p>
+            </div>
+        </ng-template>
+        <ng-template #normalView>
+            <div [@openPage] class="col s6 m4 l3 hoverable" *ngFor="let sub of category.categories">
+                <a [routerLink]="['/catalog', sub._id]">
+                    <div class="card small">
+                        <div class="card-image">
+                            <img class="responsive-img" src="/assets/images/{{ sub.image }}">
+                        </div>
+                        <div class="card-content">
+                            <p class="card_portal blue-text center-align">{{ sub.name }}</p>
+                        </div>
+                    </div>
+                </a>
+            </div>
+        </ng-template>
+    </div>
+</ng-template>
+
+<ng-template #preloader>
+    <preloader></preloader>
+</ng-template>

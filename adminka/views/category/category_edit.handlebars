@@ -1,0 +1,172 @@
+<div class="section">
+    <form id="category_form" data-id="{{ category._id }}" data-image="{{ category.image }}">
+        <div class="row">
+            <div class="col s10">
+
+                <div class="row">
+                    <div class="col s9 input-field section">
+                        <input value="{{category.name}}" id="name" name="name" type="text" class="validate" required>
+                        <label for="name">Название категории</label>
+                    </div>
+
+                    <div class="col s3 input-field section">
+                        <input value="{{category.count}}" id="count" name="count" type="number" class="validate">
+                        <label for="count">Порядок отображения</label>
+                    </div>
+
+                    <div class="input-field col s12">
+                        <textarea id="description" class="materialize-textarea">{{category.description}}</textarea>
+                        <label for="description">Описание для поисковиков</label>
+                    </div>
+                </div>
+
+                <div class="section">
+                    <div id="btn_delete" class="center section">
+                        <button id="delete" class="btn red lighten-1 waves-effect waves-light">Удалить изображение</button>
+                    </div>
+                    <div id="control" class="file-field input-field section">
+                        <div class="btn">
+                            <span>Фото</span>
+                            <input type="file" name="image" id="image" accept="image/*">
+                        </div>
+                        <div class="file-path-wrapper">
+                            <input id="image_path" class="file-path validate" type="text">
+                        </div>
+                    </div>
+
+                    <div class="center">
+                        <img id="preview" class="responsive-img z-depth-1" src="/images/{{ category.image }}">
+                    </div>
+                </div>
+            </div>
+
+            <div class="col s2">
+                <div class="input-field section">
+                    <button id="save" class="btn right red lighten-1 waves-effect waves-light" type="submit">Обновить</button>
+                </div>
+            </div>
+
+        </div>
+    </form>
+</div>
+
+
+
+
+<style>
+    #control {
+        display: none;
+    }
+</style>
+
+<script>
+    // temp variable
+    let image = document.getElementById('category_form').dataset.image;
+    let id = document.getElementById('category_form').dataset.id;
+
+    // IMG CHANGE
+    $('#image').on('change', () => {
+        let image_file = $("#image")[0].files[0];
+
+        let data = new FormData();
+        data.append("name", image_file.name);
+        data.append("file", image_file);
+
+        $.ajax({
+            url: "/api/category_image",
+            type: "POST",
+            data: data,
+            processData: false,
+            contentType: false,
+            success: (name) => {
+                // save image_name to variable
+                image = name;
+
+                // change preview to new image
+                $("#preview").attr('src', "/images/" + name);
+
+                $("#control").hide(300);
+                setTimeout(() => {
+                    $("#btn_delete").show(300);
+                }, 500)
+            },
+            error: (err) => {
+                Materialize.toast('Упс, ошибка! Подробности в консоле.', 4000);
+                console.log(err);
+            }
+
+        });
+    });
+
+    // btn DELETE image
+    $("#delete").on("click", (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+
+        $.ajax({
+            url: "/api/category_image",
+            type: "DELETE",
+            data: { name: image },
+            success: () => {
+                image = "default.png";
+
+                // return default image
+                $("#preview").attr('src', "/images/default.png");
+
+                // hide btn
+                $("#btn_delete").hide(300);
+
+                // set to default control menu
+                $("#image").val(null);
+                $("#image_path").val(null);
+
+                // return default menu
+                setTimeout(() => {
+                    $("#control").show(300);
+                }, 500)
+            },
+            error: (err) => {
+                Materialize.toast('Упс, ошибка! Подробности в консоле.', 4000);
+                console.log(err);
+            }
+        });
+    });
+
+    //BUTTON SAVE
+    $("#category_form").submit((e) => {
+        e.preventDefault();
+        e.stopPropagation();
+
+        let data = {
+            name: $("#name").val(),
+            count: $("#count").val(),
+            description: $("#description").val(),
+            image: image
+        };
+
+        $.ajax({
+            url: "/api/category/" + id,
+            type: "PUT",
+            data: data,
+            success: () => {
+                Materialize.toast('Категория успешно обновлена!', 800);
+                setTimeout(() => {
+                    document.location.href = "/categories";
+                }, 800);
+            },
+            error: (err) => {
+                if (err.status == 401) {
+                    Materialize.toast('Вы не авторизированы.', 1000);
+                    setTimeout(() => {
+                        document.location.href = "/";
+                    }, 800);
+                } else {
+                    Materialize.toast('Упс, ошибка! Подробности в консоле.', 4000);
+                    console.log(err);
+                };
+            }
+
+        });
+    });
+
+</script>

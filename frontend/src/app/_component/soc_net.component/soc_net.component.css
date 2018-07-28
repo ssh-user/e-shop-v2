@@ -1,0 +1,33 @@
+.menu_header{    
+    font-size: 1.4em;    
+    margin: 0;
+}
+
+.banners{
+    border: none;
+}
+
+.pointer{
+    cursor: pointer;
+}
+
+.no_pointer{
+    cursor: default;
+}
+
+.section{
+    padding-bottom: 0;
+}
+
+
+.elem_soc_net:hover {
+    filter: brightness(150%);    
+}
+
+.no_margin{
+    margin: 0;
+}
+
+.no_padding{
+    padding: 7px 3px 3px 3px;
+}

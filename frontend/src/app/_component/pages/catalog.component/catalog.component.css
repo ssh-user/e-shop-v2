@@ -1,0 +1,84 @@
+.nautilus{
+    font-family: nautilus;
+}
+
+.margin_bottom{
+    margin-bottom: 15px;
+}
+
+.table_img{
+    max-height: 100px;
+}
+
+.bold{
+    font-size: 1.3em;
+    font-weight: 500;
+}
+
+.stripped{
+    text-decoration: line-through;
+    color: #2196f3;
+}
+
+.price{
+    color: #4527a0;
+}
+
+.no_margin{
+    margin: 0;
+}
+
+.margin_left{
+    margin-left: 15px;
+}
+
+.icon_color{
+    background-color: #009688;
+    cursor: pointer;    
+}
+
+.icon_color_active{
+    background-color: #ffb84d;
+}
+
+.panel{
+    background-color: #eee;
+    padding: 15px 0;
+    margin-bottom: 20px;
+}
+
+input[type=number]::-webkit-inner-spin-button,
+input[type=number]::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+input[type=number]{
+  -moz-appearance: textfield;
+}
+
+.quantity input {
+  width: 45px;
+  height: 42px;
+  padding: 0;
+  margin: 0;
+  background-color: #eee;
+  border: 1px solid grey;
+  border-radius: 5px;
+}
+
+.minus, .plus{
+    cursor: pointer;
+    background-color: #b2dfdb;
+    border: 1px solid grey;
+    border-radius: 3px;
+    width: 20px;
+    height: 35px;
+    padding-left: 5px;
+}
+
+
+
+pagination-controls /deep/ .ngx-pagination li {
+    font-weight: bold !important;
+}

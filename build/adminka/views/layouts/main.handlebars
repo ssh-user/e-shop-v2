@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <title>Корни Подсолнуха</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.4.0/css/font-awesome.min.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/froala-editor/2.5.1/css/froala_editor.pkgd.min.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/froala-editor/2.5.1/css/froala_style.min.css" />
+    <link rel="stylesheet" href="http://fonts.googleapis.com/icon?family=Material+Icons">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.99.0/css/materialize.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/chartist.js/latest/chartist.min.css">
+
+    <script src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.99.0/js/materialize.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/froala-editor/2.5.1/js/froala_editor.pkgd.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/chartist.js/latest/chartist.min.js"></script>
+</head>
+
+<body>
+    <div class="navbar-fixed hide-on-large-only">
+        <nav class="">
+            <div class="nav-wrapper">
+                <a href="#" data-activates="mobile" class="button-collapse"><i class="material-icons">menu</i></a>
+            </div>
+        </nav>
+        <div id="mobile" class="hide-on-large-only">
+            {{> menu }}
+        </div>
+    </div>
+
+    <div class="row no_margin">
+        <div class="col s12 m4 l2 z-depth-4 hide-on-med-and-down full_height">
+            {{> menu }}
+        </div>
+
+        <div class="col s12 m8 l10 container">
+            {{{body}}}
+        </div>
+    </div>
+
+    <style>
+        /* HACKs */
+
+        .navbar-fixed {
+            z-index: 1000;
+        }
+
+        #mobile {
+            background-color: white;
+        }
+        /*normal css*/
+
+        .logo {
+            padding: 15px;
+        }
+
+        .full_height {
+            height: 100vh;
+            min-height: 100vh;
+            margin: 0;
+            padding: 0 !important;
+        }
+
+        .no_margin {
+            margin: 0;
+        }
+
+        .font_size {
+            font-size: 1.3em;
+            padding: 10px 0;
+            padding-left: 20px;
+        }
+
+        .font_size:hover {
+            background-color: lightgrey;
+        }
+
+        .list {
+            margin: 0;
+            padding: 0;
+        }
+
+        .divider {
+            margin: 0 10px;
+        }
+
+        .margin_top {
+            margin-top: 10px;
+        }
+    </style>
+
+    <script>
+        $(".button-collapse").sideNav({
+            menuWidth: 250
+        });
+    </script>
+</body>
+
+</html>

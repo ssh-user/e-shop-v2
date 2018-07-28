@@ -1,0 +1,19 @@
+<div [@openPage] class="row">
+  <header>
+    <nav>
+      <app-header [countNews]="countNews"></app-header>
+      <hide-menu [daughtersMenu]="menu" [countNews]="countNews"></hide-menu>
+    </nav>
+  </header>
+
+  <div class="col l2 hide-on-med-and-down">
+    <auth-menu></auth-menu>
+    <menu [daughtersMenu]="menu"></menu>
+    <soc_net></soc_net>
+  </div>
+
+  <div class="col s12 m12 l10">
+    <router-outlet (deactivate)="onDeactivate()"></router-outlet>
+  </div>
+
+</div>

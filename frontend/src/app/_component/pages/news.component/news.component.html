@@ -1,0 +1,27 @@
+<p class="red-text center size"> Действующие АКЦИИ!</p>
+<div *ngIf="newsCard; then yes_news else no_news" class="row"></div>
+<div *ngIf="newsCard.length == 0">
+    <p class="size red-text center">Простите, в данный момент, нет никаких акций.</p>
+</div>
+
+<ng-template #yes_news>
+    <div [@openPage] *ngFor="let news of newsCard" class="card col s12 m12 l6 hoverable">
+        <div class="card-image waves-effect waves-block waves-light">
+            <img class="activator height" src="/assets/news/{{ news.image }}">
+        </div>
+        <div class="card-content">
+            <span class="card-title activator grey-text text-darken-4">{{ news.title }}<i class="material-icons right">more_vert</i></span>
+        </div>
+        <div class="card-reveal">
+            <span class="card-title grey-text text-darken-4">Условия акции!<i class="material-icons right">close</i></span>
+            <div [froalaView]="news.description"></div>
+        </div>
+    </div>
+</ng-template>
+
+
+<ng-template #no_news>
+    <h4 [@openPage] class="center size">
+        <preloader></preloader>
+    </h4>
+</ng-template>
